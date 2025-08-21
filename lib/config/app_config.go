@@ -1,12 +1,11 @@
 package config
 
 import (
-	"errors"
-
 	"github.com/go-viper/mapstructure/v2"
 	"github.com/spf13/viper"
 
 	"github.com/HideyoshiNakazone/tracko/lib/model"
+	"github.com/HideyoshiNakazone/tracko/lib/internal_errors"
 )
 
 var trackedPaths = []string{
@@ -71,7 +70,7 @@ func InitializeConfigFromFile(filePath string) error {
 
 func GetConfig() (*model.ConfigModel, error) {
 	if !configInitialized {
-		return nil, errors.New("Config not initialized")
+		return nil, internal_errors.NewConfigNotInitializedError()
 	}
 
 	var cfg model.ConfigModel
@@ -84,7 +83,7 @@ func GetConfig() (*model.ConfigModel, error) {
 
 func SetConfig(cfg *model.ConfigModel) error {
 	if !configInitialized {
-		return errors.New("Config not initialized")
+		return internal_errors.NewConfigNotInitializedError()
 	}
 
 	m := map[string]any{}
