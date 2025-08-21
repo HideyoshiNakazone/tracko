@@ -1,0 +1,7 @@
+author:
+    name: "Your Name"
+    emails:
+        - "your.email@example.com"
+repos:
+    - "$HOME/your/repo1"
+    - "$HOME/your/repo2"

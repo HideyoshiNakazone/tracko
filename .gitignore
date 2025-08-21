@@ -1,0 +1,8 @@
+# Dev Configs
+*.yaml
+!example.config.yaml
+
+
+# IDE Settings
+.vscode
+.idea
