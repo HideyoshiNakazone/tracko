@@ -7,7 +7,6 @@ import (
 	"strings"
 )
 
-
 func ReadStringInto(prompt string, dest *string) {
 	fmt.Print(prompt)
 	reader := bufio.NewReader(os.Stdin)

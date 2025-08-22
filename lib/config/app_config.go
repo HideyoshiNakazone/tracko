@@ -15,7 +15,6 @@ var trackedPaths = []string{
 
 const configFormat string = "yaml"
 
-
 func PrepareConfig(filePath string) error {
 	if filePath == "" {
 		for _, path := range trackedPaths {
@@ -32,13 +31,12 @@ func PrepareConfig(filePath string) error {
 	return err
 }
 
-
 func GetConfig() (*model.ConfigModel, error) {
 	err := viper.ReadInConfig()
 	if err != nil {
 		return nil, internal_errors.ErrConfigNotInitialized
 	}
-	
+
 	var cfg model.ConfigModel
 	if err := viper.Unmarshal(&cfg); err != nil {
 		return nil, err

@@ -12,7 +12,6 @@ import (
 	"github.com/HideyoshiNakazone/tracko/lib/internal_errors"
 )
 
-
 var rootCmd = &cobra.Command{
 	Use:   "tracko",
 	Short: "CLI for importing Git commit history",

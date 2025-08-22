@@ -6,17 +6,15 @@ import (
 	"github.com/HideyoshiNakazone/tracko/lib/config"
 )
 
-
 var ImportCmd = &cobra.Command{
-	Use:   "import",
-	Long:  `Import Git commit history from a repository.`,
-	Run: runImport,
+	Use:  "import",
+	Long: `Import Git commit history from a repository.`,
+	Run:  runImport,
 }
-
 
 func runImport(cmd *cobra.Command, args []string) {
 	// TODO: Implement import functionality
-	cfg, err := config.GetConfig();
+	cfg, err := config.GetConfig()
 
 	if err != nil {
 		cmd.Print("No valid config found.")

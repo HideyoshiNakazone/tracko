@@ -28,7 +28,6 @@ func runConfigInit(cmd *cobra.Command, args []string) {
 		cmd.Println("Configuration already initialized.")
 		return
 	}
-	
 
 	cmd.Println("Initializing configuration...")
 	var cfgBuilder = model.NewConfigBuilder()
