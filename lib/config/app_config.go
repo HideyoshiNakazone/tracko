@@ -4,88 +4,54 @@ import (
 	"github.com/go-viper/mapstructure/v2"
 	"github.com/spf13/viper"
 
-	"github.com/HideyoshiNakazone/tracko/lib/model"
 	"github.com/HideyoshiNakazone/tracko/lib/internal_errors"
+	"github.com/HideyoshiNakazone/tracko/lib/model"
 )
 
 var trackedPaths = []string{
 	"$HOME/.config/tracko", // First priority
-	"/etc/tracko",          // Second priority
-	".",                    // Third priority
+	".",                    // Second priority
 }
 
-
-
 const configFormat string = "yaml"
-var configInitialized bool = false
 
 
+func PrepareConfig(filePath string) error {
+	if filePath == "" {
+		for _, path := range trackedPaths {
+			viper.AddConfigPath(path)
+		}
+	} else {
+		viper.SetConfigFile(filePath)
+	}
 
-func prepareConfig() error {
 	viper.SetConfigType(configFormat)
-
-	if configInitialized {
-		return nil
-	}
-	configInitialized = true
-
-	if err := viper.ReadInConfig(); err != nil {
-		SetConfig(
-			model.NewEmptyConfig(),
-		)
-	}
-
+	// other configurations be placed here, like migrations
 	_, err := GetConfig()
+
 	return err
 }
 
 
-
-func InitializeConfig() error {
-	for _, path := range trackedPaths {
-		viper.AddConfigPath(path)
-	}
-
-	err := prepareConfig()
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-
-func InitializeConfigFromFile(filePath string) error {
-	viper.SetConfigFile(filePath)
-
-	err := prepareConfig()
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-
-
 func GetConfig() (*model.ConfigModel, error) {
-	if !configInitialized {
-		return nil, internal_errors.NewConfigNotInitializedError()
+	err := viper.ReadInConfig()
+	if err != nil {
+		return nil, internal_errors.ErrConfigNotInitialized
 	}
-
+	
 	var cfg model.ConfigModel
 	if err := viper.Unmarshal(&cfg); err != nil {
 		return nil, err
 	}
+
+	if cfg.Version == "" {
+		return nil, internal_errors.ErrConfigNotInitialized
+	}
+
 	return &cfg, nil
 }
 
-
 func SetConfig(cfg *model.ConfigModel) error {
-	if !configInitialized {
-		return internal_errors.NewConfigNotInitializedError()
-	}
-
 	m := map[string]any{}
 	if err := mapstructure.Decode(cfg, &m); err != nil {
 		return err
