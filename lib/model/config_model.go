@@ -1,5 +1,7 @@
 package model
 
+import "github.com/HideyoshiNakazone/tracko/lib/internal_errors"
+
 var CurrentVersion = "v1"
 var DefaultDBPath = "$HOME/.config/tracko.db"
 
@@ -61,6 +63,22 @@ func (c *ConfigModelBuilder) WithTrackedRepos(repos []string) *ConfigModelBuilde
 	return c
 }
 
-func (c *ConfigModelBuilder) Build() *ConfigModel {
-	return c.config
+func (c *ConfigModelBuilder) Build() (*ConfigModel, error) {
+	if c.config.Version == "" {
+		return nil, internal_errors.ErrInvalidConfig
+	}
+
+	if c.config.DBPath == "" {
+		return nil, internal_errors.ErrInvalidConfig
+	}
+
+	if c.config.TrackedAuthor.Name == "" {
+		return nil, internal_errors.ErrInvalidConfig
+	}
+
+	if len(c.config.TrackedAuthor.Emails) == 0 {
+		return nil, internal_errors.ErrInvalidConfig
+	}
+
+	return c.config, nil
 }

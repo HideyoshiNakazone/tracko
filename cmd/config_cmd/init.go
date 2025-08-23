@@ -56,7 +56,11 @@ func runConfigInit(cmd *cobra.Command, args []string) {
 	}
 	cfgBuilder.WithTrackedAuthorEmails(trackedAuthorEmails)
 
-	config.SetConfig(cfgBuilder.Build())
+	if cfg, err := cfgBuilder.Build(); err == nil {
+		config.SetConfig(cfg)
+		return
+	}
+	cmd.Println("Configuration is invalid:", err)
 }
 
 func afterConfigInit(cmd *cobra.Command, args []string) {
