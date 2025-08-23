@@ -1,4 +1,4 @@
-package config_cmd
+package cmd
 
 import (
 	"github.com/HideyoshiNakazone/tracko/cmd/flags"
@@ -15,18 +15,18 @@ var (
 )
 
 var ConfigInitCmd = &cobra.Command{
-	Use:              "init",
-	Long:             `Initialize the configuration of the Tracko CLI.`,
-	PersistentPreRun: runConfigInit,
-	Run:              afterConfigInit,
+	Use:               "init",
+	Long:              `Initialize the configuration of the Tracko CLI.`,
+	PersistentPreRunE: runConfigInit,
+	RunE:              afterConfigInit,
 }
 
-func runConfigInit(cmd *cobra.Command, args []string) {
+func runConfigInit(cmd *cobra.Command, args []string) error {
 	err := config.PrepareConfig(flags.GetConfigPath())
 
 	if err == nil {
 		cmd.Println("Configuration already initialized.")
-		return
+		return nil
 	}
 
 	cmd.Println("Initializing configuration...")
@@ -40,36 +40,29 @@ func runConfigInit(cmd *cobra.Command, args []string) {
 
 	if trackedAuthorName == "" {
 		utils.ReadStringInto("Git author name: ", &trackedAuthorName)
-		if trackedAuthorName == "" {
-			cmd.Println("Git author name is required.")
-			return
-		}
 	}
 	cfgBuilder.WithTrackedAuthorName(trackedAuthorName)
 
 	if len(trackedAuthorEmails) == 0 {
 		utils.ReadStringSliceInto("Git author emails (comma-separated): ", &trackedAuthorEmails)
-		if len(trackedAuthorEmails) == 0 {
-			cmd.Println("At least one Git author email is required.")
-			return
-		}
 	}
 	cfgBuilder.WithTrackedAuthorEmails(trackedAuthorEmails)
 
 	if cfg, err := cfgBuilder.Build(); err == nil {
 		config.SetConfig(cfg)
-		return
+		return nil
 	}
-	cmd.Println("Configuration is invalid:", err)
+	return err
 }
 
-func afterConfigInit(cmd *cobra.Command, args []string) {
+func afterConfigInit(cmd *cobra.Command, args []string) error {
 	_, err := config.GetConfig()
 	if err != nil {
 		cmd.Println("There was an error initializing the configuration, please remove the config file and try again.")
-		return
+		return err
 	}
 	cmd.Println("Congratulations! The configuration has been initialized.")
+	return nil
 }
 
 func init() {

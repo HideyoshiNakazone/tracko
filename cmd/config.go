@@ -1,4 +1,4 @@
-package config_cmd
+package cmd
 
 import (
 	"github.com/spf13/cobra"
@@ -25,10 +25,6 @@ func runConfig(cmd *cobra.Command, args []string) {
 	cmd.Println(cfg)
 }
 
-func addSubCommands(cmd *cobra.Command) {
-	cmd.AddCommand(ConfigInitCmd)
-}
-
 func init() {
-	addSubCommands(ConfigCmd)
+	ConfigCmd.AddCommand(ConfigInitCmd)
 }
