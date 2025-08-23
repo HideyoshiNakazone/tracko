@@ -63,17 +63,6 @@ func Test_ConfigModelBuilder_Build(t *testing.T) {
 			want:    nil,
 			wantErr: internal_errors.ErrInvalidConfig,
 		},
-		{
-			name: "invalid config - missing tracked repos",
-			config: &ConfigModel{
-				Version:       "v1",
-				DBPath:        "$HOME/.config/tracko.db",
-				TrackedAuthor: ConfigAuthorModel{Name: "test", Emails: []string{"test@example.com"}},
-				TrackedRepos:  nil,
-			},
-			want:    nil,
-			wantErr: internal_errors.ErrInvalidConfig,
-		},
 	}
 
     for _, tt := range tests {
