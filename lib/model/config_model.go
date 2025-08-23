@@ -72,10 +72,6 @@ func (c *ConfigModelBuilder) Build() (*ConfigModel, error) {
 		return nil, internal_errors.ErrInvalidConfig
 	}
 
-	if len(c.config.TrackedRepos) == 0 {
-		return nil, internal_errors.ErrInvalidConfig
-	}
-
 	if c.config.TrackedAuthor.Name == "" {
 		return nil, internal_errors.ErrInvalidConfig
 	}

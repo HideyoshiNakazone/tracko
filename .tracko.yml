@@ -1,0 +1,8 @@
+author:
+    emails:
+        - vitor.h.n.batista@gmail.com
+        - vitor@hideyoshi.com.br
+    name: Vitor Hideyoshi
+db_path: $HOME/.config/tracko.db
+repos: []
+version: v1
