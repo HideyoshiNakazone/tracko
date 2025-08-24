@@ -51,6 +51,18 @@ func GetConfig() (*ConfigModel, error) {
 	return &cfg, nil
 }
 
+func GetConfigAttr(key string) (any, error) {
+	if err := viper.ReadInConfig(); err != nil {
+		return nil, fmt.Errorf("failed to read config: %w", err)
+	}
+
+	if !utils.CheckModelHasField(ConfigModel{}, key) {
+		return nil, fmt.Errorf("field %q does not exist", key)
+	}
+
+	return viper.Get(key), nil
+}
+
 func SetConfig(cfg *ConfigModel) error {
 	m := map[string]any{}
 	if err := mapstructure.Decode(cfg, &m); err != nil {
