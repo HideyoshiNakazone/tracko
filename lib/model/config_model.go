@@ -14,7 +14,8 @@ type ConfigModel struct {
 	Version       string            `mapstructure:"version"`
 	DBPath        string            `mapstructure:"db_path"`
 	TrackedAuthor ConfigAuthorModel `mapstructure:"author"`
-	TrackedRepos  []string          `mapstructure:"repos"`
+	TargetRepo	  string            `mapstructure:"target_repo"`
+	TrackedRepos  []string          `mapstructure:"tracked_repos"`
 }
 
 type ConfigModelBuilder struct {
@@ -27,6 +28,7 @@ func NewConfigBuilder() *ConfigModelBuilder {
 			Version:       CurrentVersion,
 			DBPath:        DefaultDBPath,
 			TrackedAuthor: ConfigAuthorModel{},
+			TargetRepo:    "",
 			TrackedRepos:  []string{},
 		},
 	}
@@ -58,6 +60,11 @@ func (c *ConfigModelBuilder) WithAppendTrackedAuthorEmail(email string) *ConfigM
 	return c
 }
 
+func (c *ConfigModelBuilder) WithTargetRepo(repo string) *ConfigModelBuilder {
+	c.config.TargetRepo = repo
+	return c
+}
+
 func (c *ConfigModelBuilder) WithTrackedRepos(repos []string) *ConfigModelBuilder {
 	c.config.TrackedRepos = repos
 	return c
@@ -77,6 +84,10 @@ func (c *ConfigModelBuilder) Build() (*ConfigModel, error) {
 	}
 
 	if len(c.config.TrackedAuthor.Emails) == 0 {
+		return nil, internal_errors.ErrInvalidConfig
+	}
+
+	if c.config.TargetRepo == "" {
 		return nil, internal_errors.ErrInvalidConfig
 	}
 

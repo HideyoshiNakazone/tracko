@@ -24,6 +24,7 @@ func Test_ExecuteConfigInit(t *testing.T) {
 			"--db-path", "/tmp/test.db",
 			"--author-name", "Test User",
 			"--author-emails", "test@example.com",
+			"--target-repo", "test/repo",
 		},
 	)
 
