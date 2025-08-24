@@ -12,6 +12,7 @@ var (
 	dbPath              string
 	trackedAuthorName   string
 	trackedAuthorEmails []string
+	targetRepo          string
 )
 
 var ConfigInitCmd = &cobra.Command{
@@ -48,6 +49,11 @@ func runConfigInit(cmd *cobra.Command, args []string) error {
 	}
 	cfgBuilder.WithTrackedAuthorEmails(trackedAuthorEmails)
 
+	if targetRepo == "" {
+		utils.ReadStringInto("Target repository (owner/repo): ", &targetRepo)
+	}
+	cfgBuilder.WithTargetRepo(targetRepo)
+
 	if cfg, err := cfgBuilder.Build(); err == nil {
 		config.SetConfig(cfg)
 		return nil
@@ -70,4 +76,5 @@ func init() {
 	ConfigInitCmd.Flags().StringVar(&dbPath, "db-path", "", "Path to the database file")
 	ConfigInitCmd.Flags().StringVar(&trackedAuthorName, "author-name", "", "Name of the author to track")
 	ConfigInitCmd.Flags().StringSliceVar(&trackedAuthorEmails, "author-emails", []string{}, "Emails of the authors to track")
+	ConfigInitCmd.Flags().StringVar(&targetRepo, "target-repo", "", "Target repository (owner/repo)")
 }
