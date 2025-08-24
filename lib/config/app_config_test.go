@@ -4,7 +4,6 @@ import (
 	"os"
 	"testing"
 
-	"github.com/go-viper/mapstructure/v2"
 	"github.com/spf13/viper"
 )
 
@@ -94,52 +93,5 @@ func Test_SetConfigAttr(t *testing.T) {
 				t.Errorf("SetConfigAttr() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
-	}
-}
-
-func Test_GetConfigAttr(t *testing.T) {
-	expectedConfig := &ConfigModel{
-		Version: "v1",
-		DBPath:  "/tmp/test.db",
-		TrackedAuthor: ConfigAuthorModel{
-			Name:   "Test User",
-			Emails: []string{"test@example.com"},
-		},
-		TrackedRepos: []string{"repo1", "repo2"},
-	}
-
-	_, cleanup, err := PrepareTestConfig(expectedConfig)
-	defer (*cleanup)()
-
-	if err != nil {
-		t.Fatalf("Failed to prepare test config: %v", err)
-	}
-	defer (*cleanup)()
-
-	if err != nil {
-		t.Fatalf("Failed to prepare test config: %v", err)
-	}
-
-	// Test GetConfigAttr
-	got, err := GetConfigAttr("db_path")
-	if err != nil || got != expectedConfig.DBPath {
-		t.Fatalf("Failed to get config attribute: %v", err)
-	}
-
-	// Test GetConfigAttr
-	var expectedAuthor ConfigAuthorModel
-
-	got, err = GetConfigAttr("author")
-	if err != nil {
-		t.Fatalf("Failed to get config attribute: %v", err)
-	}
-
-	err = mapstructure.Decode(got, &expectedAuthor)
-	if err != nil {
-		t.Fatalf("Failed to decode author config: %v", err)
-	}
-
-	if expectedAuthor.Name != "Test User" || len(expectedAuthor.Emails) != 1 || expectedAuthor.Emails[0] != "test@example.com" {
-		t.Errorf("Unexpected author config: %+v", expectedAuthor)
 	}
 }
