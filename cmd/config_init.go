@@ -3,7 +3,6 @@ package cmd
 import (
 	"github.com/HideyoshiNakazone/tracko/cmd/flags"
 	"github.com/HideyoshiNakazone/tracko/lib/config"
-	"github.com/HideyoshiNakazone/tracko/lib/model"
 	"github.com/HideyoshiNakazone/tracko/lib/utils"
 	"github.com/spf13/cobra"
 )
@@ -31,11 +30,11 @@ func runConfigInit(cmd *cobra.Command, args []string) error {
 	}
 
 	cmd.Println("Initializing configuration...")
-	var cfgBuilder = model.NewConfigBuilder()
+	var cfgBuilder = config.NewConfigBuilder()
 
 	if dbPath == "" {
-		cmd.Println("Using default database path: ", model.DefaultDBPath)
-		dbPath = model.DefaultDBPath
+		cmd.Println("Using default database path: ", config.DefaultDBPath)
+		dbPath = config.DefaultDBPath
 	}
 	cfgBuilder.WithDBPath(dbPath)
 

@@ -4,7 +4,6 @@ import (
 	"os"
 	"testing"
 
-	"github.com/HideyoshiNakazone/tracko/lib/model"
 	"github.com/spf13/viper"
 )
 
@@ -17,10 +16,10 @@ func TestSetAndGetConfig(t *testing.T) {
 	defer os.Remove(tempFile.Name())
 
 	// Prepare config
-	cfg := &model.ConfigModel{
+	cfg := &ConfigModel{
 		Version: "v1",
 		DBPath:  "/tmp/test.db",
-		TrackedAuthor: model.ConfigAuthorModel{
+		TrackedAuthor: ConfigAuthorModel{
 			Name:   "Test User",
 			Emails: []string{"test@example.com"},
 		},
@@ -55,5 +54,44 @@ func TestPrepareConfigWithInvalidFile(t *testing.T) {
 	err := PrepareConfig("/nonexistent/path/config.yaml")
 	if err == nil {
 		t.Error("Expected error for nonexistent config file, got nil")
+	}
+}
+
+func Test_SetConfigAttr(t *testing.T) {
+	// Test SetConfigAttr
+	type args struct {
+		key   string
+		value string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{"Restricted case", args{"version", "value1"}, true},
+		{"Valid case", args{"db_path", "value1"}, false},
+		{"Invalid case", args{"invalid_field", "value2"}, true},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			_, cleanup, err := PrepareTestConfig(&ConfigModel{
+				Version: "v1",
+				DBPath:  "/tmp/test.db",
+				TrackedAuthor: ConfigAuthorModel{
+					Name:   "Test User",
+					Emails: []string{"test@example.com"},
+				},
+				TrackedRepos: []string{"repo1", "repo2"},
+			})
+			defer (*cleanup)()
+
+			if err != nil {
+				t.Fatalf("Failed to prepare test config: %v", err)
+			}
+
+			if err := SetConfigAttr(tt.args.key, tt.args.value); (err != nil) != tt.wantErr {
+				t.Errorf("SetConfigAttr() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
 	}
 }

@@ -27,4 +27,5 @@ func runConfig(cmd *cobra.Command, args []string) {
 
 func init() {
 	ConfigCmd.AddCommand(ConfigInitCmd)
+	ConfigCmd.AddCommand(ConfigSetCmd)
 }
