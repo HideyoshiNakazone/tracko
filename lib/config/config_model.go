@@ -1,6 +1,8 @@
-package model
+package config
 
-import "github.com/HideyoshiNakazone/tracko/lib/internal_errors"
+import (
+	"github.com/HideyoshiNakazone/tracko/lib/internal_errors"
+)
 
 var CurrentVersion = "v1"
 var DefaultDBPath = "$HOME/.config/tracko.db"
@@ -11,13 +13,15 @@ type ConfigAuthorModel struct {
 }
 
 type ConfigModel struct {
-	Version       string            `mapstructure:"version"`
+	Version       string            `mapstructure:"version" restricted:"true"`
 	DBPath        string            `mapstructure:"db_path"`
 	TrackedAuthor ConfigAuthorModel `mapstructure:"author"`
 	TargetRepo	  string            `mapstructure:"target_repo"`
 	TrackedRepos  []string          `mapstructure:"tracked_repos"`
 }
 
+
+// ConfigModelBuilder is a builder for ConfigModel
 type ConfigModelBuilder struct {
 	config *ConfigModel
 }

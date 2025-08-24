@@ -4,7 +4,6 @@ import (
 	"os"
 	"testing"
 
-	"github.com/HideyoshiNakazone/tracko/lib/model"
 	"github.com/spf13/viper"
 )
 
@@ -17,10 +16,10 @@ func TestSetAndGetConfig(t *testing.T) {
 	defer os.Remove(tempFile.Name())
 
 	// Prepare config
-	cfg := &model.ConfigModel{
+	cfg := &ConfigModel{
 		Version: "v1",
 		DBPath:  "/tmp/test.db",
-		TrackedAuthor: model.ConfigAuthorModel{
+		TrackedAuthor: ConfigAuthorModel{
 			Name:   "Test User",
 			Emails: []string{"test@example.com"},
 		},
