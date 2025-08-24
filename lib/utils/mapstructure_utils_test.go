@@ -2,7 +2,6 @@ package utils
 
 import "testing"
 
-
 func Test_CheckModelHasTag(t *testing.T) {
 	type TestStruct struct {
 		Field1 string `mapstructure:"field1" restricted:"true"`

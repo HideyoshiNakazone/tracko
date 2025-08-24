@@ -16,10 +16,9 @@ type ConfigModel struct {
 	Version       string            `mapstructure:"version" restricted:"true"`
 	DBPath        string            `mapstructure:"db_path"`
 	TrackedAuthor ConfigAuthorModel `mapstructure:"author"`
-	TargetRepo	  string            `mapstructure:"target_repo"`
+	TargetRepo    string            `mapstructure:"target_repo"`
 	TrackedRepos  []string          `mapstructure:"tracked_repos"`
 }
-
 
 // ConfigModelBuilder is a builder for ConfigModel
 type ConfigModelBuilder struct {

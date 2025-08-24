@@ -7,11 +7,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-
 var ConfigSetCmd = &cobra.Command{
-	Use:               "set",
-	Long:              `Set an attribute in the configuration of the Tracko CLI.`,
-	RunE:              runConfigSet,
+	Use:  "set",
+	Long: `Set an attribute in the configuration of the Tracko CLI.`,
+	RunE: runConfigSet,
 }
 
 func runConfigSet(cmd *cobra.Command, args []string) error {

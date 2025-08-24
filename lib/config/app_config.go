@@ -65,10 +65,13 @@ func SetConfig(cfg *ConfigModel) error {
 	return nil
 }
 
-
 func SetConfigAttr(key string, value any) error {
 	if err := viper.ReadInConfig(); err != nil {
 		return fmt.Errorf("failed to read config: %w", err)
+	}
+
+	if !utils.CheckModelHasField(ConfigModel{}, key) {
+		return fmt.Errorf("field %q does not exist", key)
 	}
 
 	if utils.CheckModelHasTag(ConfigModel{}, key, "restricted", "true") {

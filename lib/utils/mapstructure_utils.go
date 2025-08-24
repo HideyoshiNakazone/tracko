@@ -5,6 +5,16 @@ import (
 	"strings"
 )
 
+func CheckModelHasField(model interface{}, fieldName string) bool {
+	t := reflect.TypeOf(model)
+
+	fieldNames := strings.Split(fieldName, ".")
+	if len(fieldNames) == 0 {
+		return false
+	}
+	structField, ok := FindFieldByNameTree(&t, &fieldNames)
+	return ok && structField != nil
+}
 
 func CheckModelHasTag(model interface{}, fieldName string, tagKey string, tagValue string) bool {
 	t := reflect.TypeOf(model)
@@ -19,7 +29,6 @@ func CheckModelHasTag(model interface{}, fieldName string, tagKey string, tagVal
 	}
 	return structField.Tag.Get(tagKey) == tagValue
 }
-
 
 func FindFieldByNameTree(t *reflect.Type, fieldNames *[]string) (*reflect.StructField, bool) {
 	if len(*fieldNames) == 0 {
