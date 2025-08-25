@@ -13,16 +13,15 @@ import (
 var ConfigCmd = &cobra.Command{
 	Use:  "config",
 	Long: `Manage the configuration of the Tracko CLI.`,
-	Run:  runConfig,
+	RunE:  runConfig,
 }
 
-func runConfig(cmd *cobra.Command, args []string) {
+func runConfig(cmd *cobra.Command, args []string) error {
 	// TODO: Implement import functionality
 	cfg, err := config.GetConfig()
 
 	if err != nil {
-		cmd.Print("No valid config found.")
-		return
+		return fmt.Errorf("no valid config found: %w", err)
 	}
 
 		// Create table
@@ -37,6 +36,8 @@ func runConfig(cmd *cobra.Command, args []string) {
 	table.Append([]string{"Tracked Repos", fmt.Sprintf("%v", cfg.TrackedRepos)})
 
 	table.Render()
+	
+	return nil
 }
 
 func init() {
