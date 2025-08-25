@@ -44,4 +44,5 @@ func init() {
 	ConfigCmd.AddCommand(ConfigInitCmd)
 	ConfigCmd.AddCommand(ConfigSetCmd)
 	ConfigCmd.AddCommand(ConfigGetCmd)
+	ConfigCmd.AddCommand(ConfigRepo)
 }

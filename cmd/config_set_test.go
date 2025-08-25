@@ -37,7 +37,7 @@ func Test_RunConfigSet(t *testing.T) {
 		t.Fatalf("Command execution failed: %v", err)
 	}
 
-	actualDBPath, err := config.GetConfigAttr("db_path")
+	actualDBPath, err := config.GetConfigAttr[string]("db_path")
 	if err != nil {
 		t.Fatalf("Failed to get config attribute: %v", err)
 	}
@@ -116,7 +116,7 @@ func Test_RunConfigSet_RestrictedKey(t *testing.T) {
 		t.Errorf("Expected error message to contain %q, but got %q", expectedErrorMsg, err.Error())
 	}
 
-	actualVersion, err := config.GetConfigAttr("version")
+	actualVersion, err := config.GetConfigAttr[string]("version")
 	if err != nil {
 		t.Fatalf("Failed to get config attribute: %v", err)
 	}
