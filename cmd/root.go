@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"errors"
+	"fmt"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -16,7 +17,7 @@ var RootCmd = &cobra.Command{
 	Short: "CLI for importing Git commit history",
 	Long: `Tracko is a command-line tool for importing Git commit history into a database. It allows you to extract commit metadata from private repositories and store it in a database or consolidate it into a single repository.
 This tool is useful for developers working at companies that do not use GitHub and want to keep track of their work history.`,
-	PersistentPreRun: initConfig,
+	PersistentPreRunE: initConfig,
 }
 
 func Execute() {
@@ -25,21 +26,19 @@ func Execute() {
 	}
 }
 
-func initConfig(cmd *cobra.Command, args []string) {
+func initConfig(cmd *cobra.Command, args []string) error {
 	err := config.PrepareConfig(flags.GetConfigPath())
 	if err == nil {
-		return
+		return nil
 	}
 
 	switch {
-	case errors.Is(err, internal_errors.ErrConfigNotInitialized):
-		cmd.Println("Configuration is not initialized. Please run 'tracko config init' to initialize.")
-	default:
-		cmd.Println("Error initializing configuration:", err)
+		case errors.Is(err, internal_errors.ErrConfigNotInitialized):
+			return fmt.Errorf("configuration is not initialized, please run 'tracko config init' to initialize")
+		default:
+			return fmt.Errorf("error initializing configuration: %w", err)
 		// Handle other errors
 	}
-
-	os.Exit(1)
 }
 
 func init() {
