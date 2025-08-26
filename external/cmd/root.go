@@ -7,7 +7,8 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/HideyoshiNakazone/tracko/cmd/flags"
+	"github.com/HideyoshiNakazone/tracko/external/cmd/config_cmd"
+	"github.com/HideyoshiNakazone/tracko/external/flags"
 	"github.com/HideyoshiNakazone/tracko/lib/config"
 	"github.com/HideyoshiNakazone/tracko/lib/internal_errors"
 )
@@ -44,7 +45,7 @@ func initConfig(cmd *cobra.Command, args []string) error {
 func init() {
 	RootCmd.AddCommand(ImportCmd)
 	RootCmd.AddCommand(ExportCmd)
-	RootCmd.AddCommand(ConfigCmd)
+	RootCmd.AddCommand(config_cmd.ConfigCmd)
 
 	RootCmd.PersistentFlags().StringVar(&flags.ConfigPath, "config", "", "Path to the config file")
 

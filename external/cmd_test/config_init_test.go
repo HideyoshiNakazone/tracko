@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"os"
 	"testing"
+
+	"github.com/HideyoshiNakazone/tracko/external/cmd"
 )
 
 func Test_ExecuteConfigInit(t *testing.T) {
@@ -15,9 +17,9 @@ func Test_ExecuteConfigInit(t *testing.T) {
 
 	cmd_output := new(bytes.Buffer)
 
-	RootCmd.SetOut(cmd_output)
-	RootCmd.SetErr(cmd_output)
-	RootCmd.SetArgs(
+	cmd.RootCmd.SetOut(cmd_output)
+	cmd.RootCmd.SetErr(cmd_output)
+	cmd.RootCmd.SetArgs(
 		[]string{
 			"config", "init",
 			"--config", tempFile.Name(),
@@ -28,7 +30,7 @@ func Test_ExecuteConfigInit(t *testing.T) {
 		},
 	)
 
-	if err := RootCmd.Execute(); err != nil {
+	if err := cmd.RootCmd.Execute(); err != nil {
 		t.Fatalf("Command execution failed: %v", err)
 	}
 

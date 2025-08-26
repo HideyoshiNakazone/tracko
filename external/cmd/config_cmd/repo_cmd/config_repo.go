@@ -1,4 +1,4 @@
-package cmd
+package repo_cmd
 
 import (
 	"errors"

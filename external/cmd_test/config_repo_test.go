@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"testing"
 
+	"github.com/HideyoshiNakazone/tracko/external/cmd"
 	"github.com/HideyoshiNakazone/tracko/lib/config"
 )
 
@@ -32,7 +33,7 @@ func Test_ExecuteConfigRepoList(t *testing.T) {
 	}
 	defer (*tempCleanup)()
 
-	RootCmd.SetArgs(
+	cmd.RootCmd.SetArgs(
 		[]string{
 			"--config", tempFile.Name(),
 			"config", "repo", "list",
@@ -40,9 +41,9 @@ func Test_ExecuteConfigRepoList(t *testing.T) {
 	)
 	
 	var outputBuf bytes.Buffer
-	RootCmd.SetOut(&outputBuf)
+	cmd.RootCmd.SetOut(&outputBuf)
 
-	if err := RootCmd.Execute(); err != nil {
+	if err := cmd.RootCmd.Execute(); err != nil {
 		t.Fatalf("Command execution failed: %v", err)
 	}
 }

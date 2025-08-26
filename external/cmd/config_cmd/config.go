@@ -1,4 +1,4 @@
-package cmd
+package config_cmd
 
 import (
 	"fmt"
@@ -8,6 +8,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/HideyoshiNakazone/tracko/lib/config"
+	"github.com/HideyoshiNakazone/tracko/external/cmd/config_cmd/repo_cmd"
 )
 
 var ConfigCmd = &cobra.Command{
@@ -44,5 +45,5 @@ func init() {
 	ConfigCmd.AddCommand(ConfigInitCmd)
 	ConfigCmd.AddCommand(ConfigSetCmd)
 	ConfigCmd.AddCommand(ConfigGetCmd)
-	ConfigCmd.AddCommand(ConfigRepo)
+	ConfigCmd.AddCommand(repo_cmd.ConfigRepo)
 }

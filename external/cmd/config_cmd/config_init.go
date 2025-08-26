@@ -1,7 +1,7 @@
-package cmd
+package config_cmd
 
 import (
-	"github.com/HideyoshiNakazone/tracko/cmd/flags"
+	"github.com/HideyoshiNakazone/tracko/external/flags"
 	"github.com/HideyoshiNakazone/tracko/lib/config"
 	"github.com/HideyoshiNakazone/tracko/lib/utils"
 	"github.com/spf13/cobra"
