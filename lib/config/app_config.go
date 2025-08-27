@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"reflect"
 
 	"github.com/go-viper/mapstructure/v2"
 	"github.com/spf13/viper"
@@ -51,16 +52,31 @@ func GetConfig() (*ConfigModel, error) {
 	return &cfg, nil
 }
 
-func GetConfigAttr(key string) (any, error) {
+func GetConfigAttr[T any](key string) (T, error) {
+	var zero T
+
 	if err := viper.ReadInConfig(); err != nil {
-		return nil, fmt.Errorf("failed to read config: %w", err)
+		return zero, fmt.Errorf("failed to read config: %w", err)
 	}
 
-	if !utils.CheckModelHasField(ConfigModel{}, key) {
-		return nil, fmt.Errorf("field %q does not exist", key)
+	val := viper.Get(key)
+	if val == nil {
+		return zero, fmt.Errorf("config value for %q is nil", key)
 	}
 
-	return viper.Get(key), nil
+	v := reflect.ValueOf(val)
+	targetType := reflect.TypeOf(zero)
+
+	if targetType == nil {
+		return val.(T), nil
+	}
+
+	if !v.Type().AssignableTo(targetType) {
+		return zero, fmt.Errorf("cannot cast config value for %q from %T to %v", key, val, targetType)
+	}
+
+	casted := v.Convert(targetType).Interface().(T)
+	return casted, nil
 }
 
 func SetConfig(cfg *ConfigModel) error {

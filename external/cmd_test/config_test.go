@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"testing"
 
+	"github.com/HideyoshiNakazone/tracko/external/cmd"
 	"github.com/HideyoshiNakazone/tracko/lib/config"
 )
 
@@ -45,13 +46,13 @@ func Test_ExecuteConfigCommand(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			RootCmd.SetArgs(tt.args)
+			cmd.RootCmd.SetArgs(tt.args)
 
 			cmd_output := new(bytes.Buffer)
-			RootCmd.SetOut(cmd_output)
-			RootCmd.SetErr(cmd_output)
+			cmd.RootCmd.SetOut(cmd_output)
+			cmd.RootCmd.SetErr(cmd_output)
 
-			err := RootCmd.Execute()
+			err := cmd.RootCmd.Execute()
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Execute() error = %v, wantErr %v", err, tt.wantErr)
 				return

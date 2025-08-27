@@ -1,4 +1,4 @@
-package cmd
+package config_cmd
 
 import (
 	"errors"
@@ -19,7 +19,7 @@ func runConfigGet(cmd *cobra.Command, args []string) error {
 		return errors.New("invalid number of arguments")
 	}
 
-	value, err := config.GetConfigAttr(args[0])
+	value, err := config.GetConfigAttr[any](args[0])
 	if err != nil {
 		return err
 	}

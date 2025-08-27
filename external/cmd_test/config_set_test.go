@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"testing"
 
+	"github.com/HideyoshiNakazone/tracko/external/cmd"
 	"github.com/HideyoshiNakazone/tracko/lib/config"
 )
 
@@ -26,18 +27,18 @@ func Test_RunConfigSet(t *testing.T) {
 
 	expectedDBPath := "/tmp/test1.db"
 
-	RootCmd.SetArgs(
+	cmd.RootCmd.SetArgs(
 		[]string{
 			"--config", tempFile.Name(),
 			"config", "set", "db_path", expectedDBPath,
 		},
 	)
 
-	if err := RootCmd.Execute(); err != nil {
+	if err := cmd.RootCmd.Execute(); err != nil {
 		t.Fatalf("Command execution failed: %v", err)
 	}
 
-	actualDBPath, err := config.GetConfigAttr("db_path")
+	actualDBPath, err := config.GetConfigAttr[string]("db_path")
 	if err != nil {
 		t.Fatalf("Failed to get config attribute: %v", err)
 	}
@@ -64,14 +65,14 @@ func Test_RunConfigSet_InvalidKey(t *testing.T) {
 	}
 	defer (*tempCleanup)()
 
-	RootCmd.SetArgs(
+	cmd.RootCmd.SetArgs(
 		[]string{
 			"--config", tempFile.Name(),
 			"config", "set", "invalid_key", "some_value",
 		},
 	)
 
-	err = RootCmd.Execute()
+	err = cmd.RootCmd.Execute()
 	if err == nil {
 		t.Fatalf("Expected command to fail with invalid key, but it succeeded")
 	}
@@ -99,14 +100,14 @@ func Test_RunConfigSet_RestrictedKey(t *testing.T) {
 	}
 	defer (*tempCleanup)()
 
-	RootCmd.SetArgs(
+	cmd.RootCmd.SetArgs(
 		[]string{
 			"--config", tempFile.Name(),
 			"config", "set", "version", "restricted_value",
 		},
 	)
 
-	err = RootCmd.Execute()
+	err = cmd.RootCmd.Execute()
 	if err == nil {
 		t.Fatalf("Expected command to fail with restricted key, but it succeeded")
 	}
@@ -116,7 +117,7 @@ func Test_RunConfigSet_RestrictedKey(t *testing.T) {
 		t.Errorf("Expected error message to contain %q, but got %q", expectedErrorMsg, err.Error())
 	}
 
-	actualVersion, err := config.GetConfigAttr("version")
+	actualVersion, err := config.GetConfigAttr[string]("version")
 	if err != nil {
 		t.Fatalf("Failed to get config attribute: %v", err)
 	}
