@@ -7,14 +7,14 @@ import (
 	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
 
-	"github.com/HideyoshiNakazone/tracko/lib/config"
 	"github.com/HideyoshiNakazone/tracko/external/cmd/config_cmd/repo_cmd"
+	"github.com/HideyoshiNakazone/tracko/lib/config"
 )
 
 var ConfigCmd = &cobra.Command{
 	Use:  "config",
 	Long: `Manage the configuration of the Tracko CLI.`,
-	RunE:  runConfig,
+	RunE: runConfig,
 }
 
 func runConfig(cmd *cobra.Command, args []string) error {
@@ -25,7 +25,7 @@ func runConfig(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("no valid config found: %w", err)
 	}
 
-		// Create table
+	// Create table
 	table := tablewriter.NewWriter(os.Stdout)
 	table.Header([]string{"Field", "Value"})
 
@@ -37,7 +37,7 @@ func runConfig(cmd *cobra.Command, args []string) error {
 	table.Append([]string{"Tracked Repos", fmt.Sprintf("%v", cfg.TrackedRepos)})
 
 	table.Render()
-	
+
 	return nil
 }
 
@@ -45,5 +45,5 @@ func init() {
 	ConfigCmd.AddCommand(ConfigInitCmd)
 	ConfigCmd.AddCommand(ConfigSetCmd)
 	ConfigCmd.AddCommand(ConfigGetCmd)
-	ConfigCmd.AddCommand(repo_cmd.ConfigRepo)
+	ConfigCmd.AddCommand(repo_cmd.RepoCmd)
 }
