@@ -12,7 +12,7 @@ var RepoListCmd = &cobra.Command{
 }
 
 func runRepoList(cmd *cobra.Command, args []string) error {
-	repos, err := config.GetConfigAttr[[]interface{}]("tracked_repos")
+	repos, err := config.GetConfigAttr[[]any]("tracked_repos")
 	if err != nil {
 		return err
 	}
