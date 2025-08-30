@@ -14,7 +14,7 @@ func Test_IsGitRepository(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, ok := IsGitRepository(&tt.path)
+			ok := IsGitRepository(&tt.path)
 			if ok != tt.expected {
 				t.Errorf("Expected %v, got %v", tt.expected, ok)
 			}

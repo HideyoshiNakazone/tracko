@@ -2,7 +2,9 @@ package repo_cmd
 
 import (
 	"errors"
+	"path/filepath"
 
+	"github.com/HideyoshiNakazone/tracko/lib/config"
 	"github.com/HideyoshiNakazone/tracko/lib/repo"
 	"github.com/spf13/cobra"
 )
@@ -14,15 +16,42 @@ var RepoAddCmd = &cobra.Command{
 	RunE:  runRepoAdd,
 }
 
-func runRepoAdd(cmd *cobra.Command, args []string) error {
-	repoPath := args[0]
 
-	repoPath, ok := repo.IsGitRepository(&repoPath)
-	if !ok {
-		return errors.New("Invalid git repository")
+func validateRepoPath(cfg *config.ConfigModel, repoPath string) error {
+	if !repo.IsGitRepository(&repoPath) {
+		return errors.New("invalid git repository")
 	}
 
-	cmd.Println("Adding repository:", repoPath)
+	for _, trackedRepo := range cfg.TrackedRepos {
+		if trackedRepo == repoPath {
+			return errors.New("repository already tracked")
+		}
+	}
 
 	return nil
+}
+
+func runRepoAdd(cmd *cobra.Command, args []string) error {
+	cfg, err := config.GetConfig()
+	if err != nil {
+		return err
+	}
+
+	if len(args) != 1 {
+		return errors.New("invalid arguments")
+	}
+
+	repoPath, err := filepath.Abs(args[0])
+	if err != nil {
+		return errors.New("invalid repository path")
+	}
+
+	err = validateRepoPath(cfg, repoPath)
+	if err != nil {
+		return err
+	}
+
+	cfg.TrackedRepos = append(cfg.TrackedRepos, repoPath)
+
+	return config.SetConfig(cfg)
 }
