@@ -10,7 +10,6 @@ import (
 	"github.com/HideyoshiNakazone/tracko/lib/config_model"
 )
 
-
 func Test_ExecuteConfigGet(t *testing.T) {
 	// Prepare config
 	expectedConfig, err := config_model.NewConfigBuilder().
@@ -28,48 +27,48 @@ func Test_ExecuteConfigGet(t *testing.T) {
 		t.Fatalf("Failed to prepare test config: %v", err)
 	}
 	defer (*tempCleanup)()
-	
+
 	tests := []struct {
-		name           string
+		name          string
 		key           string
 		expectedValue any
-		wantErr        bool
+		wantErr       bool
 	}{
 		{
-			name: "Get DB Path",
-			key:  "db_path",
+			name:          "Get DB Path",
+			key:           "db_path",
 			expectedValue: expectedConfig.DBPath(),
-			wantErr:        false,
+			wantErr:       false,
 		},
 		{
-			name: "Get Version",
-			key:  "version",
+			name:          "Get Version",
+			key:           "version",
 			expectedValue: expectedConfig.Version(),
-			wantErr:        false,
+			wantErr:       false,
 		},
 		{
-			name: "Get Tracked Author Name",
-			key:  "author.name",
+			name:          "Get Tracked Author Name",
+			key:           "author.name",
 			expectedValue: expectedConfig.TrackedAuthor().Name(),
-			wantErr:        false,
+			wantErr:       false,
 		},
 		{
-			name: "Get Tracked Author Emails",
-			key:  "author.emails",
+			name:          "Get Tracked Author Emails",
+			key:           "author.emails",
 			expectedValue: expectedConfig.TrackedAuthor().Emails(),
-			wantErr:        false,
+			wantErr:       false,
 		},
 		{
-			name: "Get Target Repo",
-			key:  "target_repo",
+			name:          "Get Target Repo",
+			key:           "target_repo",
 			expectedValue: expectedConfig.TargetRepo(),
-			wantErr:        false,
+			wantErr:       false,
 		},
 		{
-			name: "Get Tracked Repos",
-			key:  "tracked_repos",
+			name:          "Get Tracked Repos",
+			key:           "tracked_repos",
 			expectedValue: expectedConfig.TrackedRepos(),
-			wantErr:        false,
+			wantErr:       false,
 		},
 	}
 	for _, tt := range tests {

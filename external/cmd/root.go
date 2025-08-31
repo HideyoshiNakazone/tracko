@@ -34,10 +34,10 @@ func initConfig(cmd *cobra.Command, args []string) error {
 	}
 
 	switch {
-		case errors.Is(err, internal_errors.ErrConfigNotInitialized):
-			return fmt.Errorf("configuration is not initialized, please run 'tracko config init' to initialize")
-		default:
-			return fmt.Errorf("error initializing configuration: %w", err)
+	case errors.Is(err, internal_errors.ErrConfigNotInitialized):
+		return fmt.Errorf("configuration is not initialized, please run 'tracko config init' to initialize")
+	default:
+		return fmt.Errorf("error initializing configuration: %w", err)
 		// Handle other errors
 	}
 }

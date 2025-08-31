@@ -9,7 +9,6 @@ import (
 	"github.com/HideyoshiNakazone/tracko/lib/config_model"
 )
 
-
 func Test_ExecuteConfigCommand(t *testing.T) {
 	// Prepare config
 	expectedConfig, err := config_model.NewConfigBuilder().
@@ -30,17 +29,17 @@ func Test_ExecuteConfigCommand(t *testing.T) {
 	defer (*tempCleanup)()
 
 	tests := []struct {
-		name       string
-		args      []string
-		wantErr   bool
+		name    string
+		args    []string
+		wantErr bool
 	}{
 		{
-			name:     "Valid config get",
+			name:    "Valid config get",
 			args:    []string{"--config", tempFile.Name(), "config"},
 			wantErr: false,
 		},
 		{
-			name:     "Invalid config get",
+			name:    "Invalid config get",
 			args:    []string{"--config", "invalid.yaml", "config"},
 			wantErr: true,
 		},

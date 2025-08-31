@@ -5,10 +5,8 @@ import (
 	"slices"
 )
 
-
 var CurrentVersion = "v1"
 var DefaultDBPath = "$HOME/.config/tracko.db"
-
 
 // Internal Config Model
 // These struct should be completely immutable
@@ -33,7 +31,6 @@ type ConfigModel struct {
 	trackedRepos  []string
 }
 
-
 // Getters for config
 func (c ConfigModel) Version() string {
 	return c.version
@@ -55,7 +52,6 @@ func (c ConfigModel) TrackedRepos() []string {
 	return c.trackedRepos
 }
 
-
 // Manipulation methods for config
 func (c ConfigModel) AppendTrackedRepo(repo string) (*ConfigModel, error) {
 	repoIndex := slices.Index(c.trackedRepos, repo)
@@ -75,7 +71,6 @@ func (c ConfigModel) RemoveTrackedRepo(repo string) (*ConfigModel, error) {
 	return &c, nil
 }
 
-
 // External Config DTO
 type AuthorDTO struct {
 	Name   string   `mapstructure:"name"`
@@ -90,11 +85,11 @@ func (a AuthorDTO) ToModel() *ConfigAuthorModel {
 }
 
 type ConfigDTO struct {
-	Version       string   	`mapstructure:"version" restricted:"true"`
-	DBPath        string   	`mapstructure:"db_path"`
+	Version       string    `mapstructure:"version" restricted:"true"`
+	DBPath        string    `mapstructure:"db_path"`
 	TrackedAuthor AuthorDTO `mapstructure:"author"`
-	TargetRepo    string   	`mapstructure:"target_repo"`
-	TrackedRepos  []string 	`mapstructure:"tracked_repos"`
+	TargetRepo    string    `mapstructure:"target_repo"`
+	TrackedRepos  []string  `mapstructure:"tracked_repos"`
 }
 
 func (c ConfigDTO) ToModel() (*ConfigModel, error) {
@@ -116,13 +111,13 @@ func ConfigDTOFromModel(model *ConfigModel) (*ConfigDTO, error) {
 		return nil, fmt.Errorf("invalid config model")
 	}
 	return &ConfigDTO{
-		Version:       model.version,
-		DBPath:        model.dbPath,
+		Version: model.version,
+		DBPath:  model.dbPath,
 		TrackedAuthor: AuthorDTO{
 			Name:   model.trackedAuthor.name,
 			Emails: model.trackedAuthor.emails,
 		},
-		TargetRepo:    model.targetRepo,
-		TrackedRepos:  model.trackedRepos,
+		TargetRepo:   model.targetRepo,
+		TrackedRepos: model.trackedRepos,
 	}, nil
 }

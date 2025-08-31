@@ -9,7 +9,6 @@ import (
 	"github.com/HideyoshiNakazone/tracko/lib/config_model"
 )
 
-
 func Test_ExecuteConfigRepoAdd(t *testing.T) {
 	// Prepare config
 	expectedConfig, err := config_model.NewConfigBuilder().
@@ -21,7 +20,7 @@ func Test_ExecuteConfigRepoAdd(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to build expected config: %v", err)
 	}
-	
+
 	tempFile, tempCleanup, err := config_handler.PrepareTestConfig(expectedConfig)
 
 	if err != nil {
@@ -35,7 +34,7 @@ func Test_ExecuteConfigRepoAdd(t *testing.T) {
 			"config", "repo", "add", "../..",
 		},
 	)
-	
+
 	var outputBuf bytes.Buffer
 	cmd.RootCmd.SetOut(&outputBuf)
 
@@ -78,7 +77,7 @@ func Test_ExecuteConfigRepoAdd_IfAlreadyAdded(t *testing.T) {
 			"config", "repo", "add", "../..",
 		},
 	)
-	
+
 	var outputBuf bytes.Buffer
 	cmd.RootCmd.SetOut(&outputBuf)
 
@@ -90,7 +89,6 @@ func Test_ExecuteConfigRepoAdd_IfAlreadyAdded(t *testing.T) {
 		t.Fatalf("Command execution succeeded unexpectedly")
 	}
 }
-
 
 func Test_ExecuteConfigRepoAdd_InvalidPath(t *testing.T) {
 	// Prepare config

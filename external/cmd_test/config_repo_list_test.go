@@ -9,7 +9,6 @@ import (
 	"github.com/HideyoshiNakazone/tracko/lib/config_model"
 )
 
-
 func Test_ExecuteConfigRepoList(t *testing.T) {
 	// Prepare config
 	expectedConfig, err := config_model.NewConfigBuilder().
@@ -39,7 +38,7 @@ func Test_ExecuteConfigRepoList(t *testing.T) {
 			"config", "repo", "list",
 		},
 	)
-	
+
 	var outputBuf bytes.Buffer
 	cmd.RootCmd.SetOut(&outputBuf)
 

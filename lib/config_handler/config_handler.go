@@ -94,11 +94,11 @@ func SetConfig(cfg *config_model.ConfigModel) error {
 	if err := viper.MergeConfigMap(m); err != nil {
 		return err
 	}
-	
+
 	if err := viper.WriteConfig(); err != nil {
 		return err
 	}
-	
+
 	return nil
 }
 

@@ -16,7 +16,6 @@ var RepoAddCmd = &cobra.Command{
 	RunE:  runRepoAdd,
 }
 
-
 func runRepoAdd(cmd *cobra.Command, args []string) error {
 	cfg, err := config_handler.GetConfig()
 	if err != nil {
