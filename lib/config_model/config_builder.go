@@ -10,69 +10,69 @@ type ConfigModelBuilder struct {
 func NewConfigBuilder() *ConfigModelBuilder {
 	return &ConfigModelBuilder{
 		config: &ConfigModel{
-			Version:       CurrentVersion,
-			DBPath:        DefaultDBPath,
-			TrackedAuthor: ConfigAuthorModel{},
-			TargetRepo:    "",
-			TrackedRepos:  []string{},
+			version:       CurrentVersion,
+			dbPath:        DefaultDBPath,
+			trackedAuthor: ConfigAuthorModel{},
+			targetRepo:    "",
+			trackedRepos:  []string{},
 		},
 	}
 }
 
 func (c *ConfigModelBuilder) WithDBPath(dbPath string) *ConfigModelBuilder {
-	c.config.DBPath = dbPath
+	c.config.dbPath = dbPath
 	return c
 }
 
 func (c *ConfigModelBuilder) WithTrackedAuthor(name string, emails []string) *ConfigModelBuilder {
-	c.config.TrackedAuthor.Name = name
-	c.config.TrackedAuthor.Emails = emails
+	c.config.trackedAuthor.name = name
+	c.config.trackedAuthor.emails = emails
 	return c
 }
 
 func (c *ConfigModelBuilder) WithTrackedAuthorName(name string) *ConfigModelBuilder {
-	c.config.TrackedAuthor.Name = name
+	c.config.trackedAuthor.name = name
 	return c
 }
 
 func (c *ConfigModelBuilder) WithTrackedAuthorEmails(emails []string) *ConfigModelBuilder {
-	c.config.TrackedAuthor.Emails = emails
+	c.config.trackedAuthor.emails = emails
 	return c
 }
 
 func (c *ConfigModelBuilder) WithAppendTrackedAuthorEmail(email string) *ConfigModelBuilder {
-	c.config.TrackedAuthor.Emails = append(c.config.TrackedAuthor.Emails, email)
+	c.config.trackedAuthor.emails = append(c.config.trackedAuthor.emails, email)
 	return c
 }
 
 func (c *ConfigModelBuilder) WithTargetRepo(repo string) *ConfigModelBuilder {
-	c.config.TargetRepo = repo
+	c.config.targetRepo = repo
 	return c
 }
 
 func (c *ConfigModelBuilder) WithTrackedRepos(repos []string) *ConfigModelBuilder {
-	c.config.TrackedRepos = repos
+	c.config.trackedRepos = repos
 	return c
 }
 
 func (c *ConfigModelBuilder) Build() (*ConfigModel, error) {
-	if c.config.Version == "" {
+	if c.config.version == "" {
 		return nil, internal_errors.ErrInvalidConfig
 	}
 
-	if c.config.DBPath == "" {
+	if c.config.dbPath == "" {
 		return nil, internal_errors.ErrInvalidConfig
 	}
 
-	if c.config.TrackedAuthor.Name == "" {
+	if c.config.trackedAuthor.name == "" {
 		return nil, internal_errors.ErrInvalidConfig
 	}
 
-	if len(c.config.TrackedAuthor.Emails) == 0 {
+	if len(c.config.trackedAuthor.emails) == 0 {
 		return nil, internal_errors.ErrInvalidConfig
 	}
 
-	if c.config.TargetRepo == "" {
+	if c.config.targetRepo == "" {
 		return nil, internal_errors.ErrInvalidConfig
 	}
 

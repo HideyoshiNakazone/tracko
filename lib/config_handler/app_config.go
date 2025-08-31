@@ -41,7 +41,7 @@ func GetConfig() (*config_model.ConfigModel, error) {
 		return nil, internal_errors.ErrConfigNotInitialized
 	}
 
-	var cfg config_model.ConfigModel
+	var cfg config_model.ConfigDTO
 	if err := viper.Unmarshal(&cfg); err != nil {
 		return nil, err
 	}
@@ -50,7 +50,7 @@ func GetConfig() (*config_model.ConfigModel, error) {
 		return nil, internal_errors.ErrConfigNotInitialized
 	}
 
-	return &cfg, nil
+	return cfg.ToModel()
 }
 
 func GetConfigAttr[T any](key string) (T, error) {
@@ -81,16 +81,24 @@ func GetConfigAttr[T any](key string) (T, error) {
 }
 
 func SetConfig(cfg *config_model.ConfigModel) error {
-	m := map[string]any{}
-	if err := mapstructure.Decode(cfg, &m); err != nil {
+	cfg_dto, err := config_model.ConfigDTOFromModel(cfg)
+	if err != nil {
 		return err
 	}
+
+	m := map[string]any{}
+	if err := mapstructure.Decode(cfg_dto, &m); err != nil {
+		return err
+	}
+
 	if err := viper.MergeConfigMap(m); err != nil {
 		return err
 	}
+	
 	if err := viper.WriteConfig(); err != nil {
 		return err
 	}
+	
 	return nil
 }
 
@@ -99,17 +107,17 @@ func SetConfigAttr(key string, value any) error {
 		return fmt.Errorf("failed to read config: %w", err)
 	}
 
-	if !utils.CheckModelHasField(config_model.ConfigModel{}, key) {
+	if !utils.CheckModelHasField(config_model.ConfigDTO{}, key) {
 		return fmt.Errorf("field %q does not exist", key)
 	}
 
-	if utils.CheckModelHasTag(config_model.ConfigModel{}, key, "restricted", "true") {
+	if utils.CheckModelHasTag(config_model.ConfigDTO{}, key, "restricted", "true") {
 		return fmt.Errorf("field %q is restricted and cannot be modified", key)
 	}
 
 	viper.Set(key, value)
 
-	var cfg config_model.ConfigModel
+	var cfg config_model.ConfigDTO
 	if err := viper.Unmarshal(&cfg); err != nil {
 		viper.ReadInConfig()
 		return fmt.Errorf("failed to unmarshal config: %w", err)

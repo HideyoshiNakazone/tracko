@@ -11,20 +11,19 @@ import (
 
 
 func Test_ExecuteConfigRepoList(t *testing.T) {
-	expectedConfig := &config_model.ConfigModel{
-		Version: config_model.CurrentVersion,
-		DBPath:  "/tmp/test.db",
-		TrackedAuthor: config_model.ConfigAuthorModel{
-			Name: "Test User",
-			Emails: []string{
-				"test@example.com",
-			},
-		},
-		TrackedRepos: []string{
+	// Prepare config
+	expectedConfig, err := config_model.NewConfigBuilder().
+		WithDBPath("/tmp/test.db").
+		WithTrackedAuthor("Test User", []string{"test@example.com"}).
+		WithTargetRepo("test/repo").
+		WithTrackedRepos([]string{
 			"/path/to/your/repo1",
 			"/path/to/your/repo2",
-		},
-		TargetRepo: "test/repo",
+		}).
+		Build()
+
+	if err != nil {
+		t.Fatalf("Failed to build expected config: %v", err)
 	}
 
 	tempFile, tempCleanup, err := config_handler.PrepareTestConfig(expectedConfig)

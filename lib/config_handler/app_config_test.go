@@ -17,14 +17,15 @@ func TestSetAndGetConfig(t *testing.T) {
 	defer os.Remove(tempFile.Name())
 
 	// Prepare config
-	cfg := &config_model.ConfigModel{
-		Version: "v1",
-		DBPath:  "/tmp/test.db",
-		TrackedAuthor: config_model.ConfigAuthorModel{
-			Name:   "Test User",
-			Emails: []string{"test@example.com"},
-		},
-		TrackedRepos: []string{"repo1", "repo2"},
+	cfg, err := config_model.NewConfigBuilder().
+		WithDBPath("/tmp/test.db").
+		WithTrackedAuthor("Test User", []string{"test@example.com"}).
+		WithTargetRepo("repo1").
+		WithTrackedRepos([]string{"repo1", "repo2"}).
+		Build()
+
+	if err != nil {
+		t.Fatalf("Failed to build config: %v", err)
 	}
 
 	// Set config file for viper
@@ -43,11 +44,11 @@ func TestSetAndGetConfig(t *testing.T) {
 		t.Fatalf("GetConfig failed: %v", err)
 	}
 
-	if got.Version != cfg.Version || got.DBPath != cfg.DBPath || got.TrackedAuthor.Name != cfg.TrackedAuthor.Name {
+	if got.Version() != cfg.Version() || got.DBPath() != cfg.DBPath() || got.TrackedAuthor().Name() != cfg.TrackedAuthor().Name() {
 		t.Errorf("Config values do not match. Got: %+v, Want: %+v", got, cfg)
 	}
-	if len(got.TrackedRepos) != len(cfg.TrackedRepos) {
-		t.Errorf("TrackedRepos length mismatch. Got: %d, Want: %d", len(got.TrackedRepos), len(cfg.TrackedRepos))
+	if len(got.TrackedRepos()) != len(cfg.TrackedRepos()) {
+		t.Errorf("TrackedRepos length mismatch. Got: %d, Want: %d", len(got.TrackedRepos()), len(cfg.TrackedRepos()))
 	}
 }
 
@@ -75,15 +76,18 @@ func Test_SetConfigAttr(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, cleanup, err := PrepareTestConfig(&config_model.ConfigModel{
-				Version: "v1",
-				DBPath:  "/tmp/test.db",
-				TrackedAuthor: config_model.ConfigAuthorModel{
-					Name:   "Test User",
-					Emails: []string{"test@example.com"},
-				},
-				TrackedRepos: []string{"repo1", "repo2"},
-			})
+			cfg, err := config_model.NewConfigBuilder().
+				WithDBPath("/tmp/test.db").
+				WithTrackedAuthor("Test User", []string{"test@example.com"}).
+				WithTargetRepo("repo1").
+				WithTrackedRepos([]string{"repo1", "repo2"}).
+				Build()
+
+			if err != nil {
+				t.Fatalf("Failed to build config: %v", err)
+			}
+
+			_, cleanup, err := PrepareTestConfig(cfg)
 			defer (*cleanup)()
 
 			if err != nil {

@@ -11,18 +11,18 @@ import (
 
 
 func Test_ExecuteConfigRepoAdd(t *testing.T) {
-	tempFile, tempCleanup, err := config_handler.PrepareTestConfig(&config_model.ConfigModel{
-		Version: config_model.CurrentVersion,
-		DBPath:  "/tmp/test.db",
-		TrackedAuthor: config_model.ConfigAuthorModel{
-			Name: "Test User",
-			Emails: []string{
-				"test@example.com",
-			},
-		},
-		TrackedRepos: []string{},
-		TargetRepo: "test/repo",
-	})
+	// Prepare config
+	expectedConfig, err := config_model.NewConfigBuilder().
+		WithDBPath("/tmp/test.db").
+		WithTrackedAuthor("Test User", []string{"test@example.com"}).
+		WithTargetRepo("test/repo").
+		Build()
+
+	if err != nil {
+		t.Fatalf("Failed to build expected config: %v", err)
+	}
+	
+	tempFile, tempCleanup, err := config_handler.PrepareTestConfig(expectedConfig)
 
 	if err != nil {
 		t.Fatalf("Failed to prepare test config: %v", err)
@@ -48,24 +48,24 @@ func Test_ExecuteConfigRepoAdd(t *testing.T) {
 		t.Fatalf("Failed to get config: %v", err)
 	}
 
-	if len(cfg.TrackedRepos) != 1 {
-		t.Errorf("Expected 1 tracked repo, got %d", len(cfg.TrackedRepos))
+	if len(cfg.TrackedRepos()) != 1 {
+		t.Errorf("Expected 1 tracked repo, got %d", len(cfg.TrackedRepos()))
 	}
 }
 
 func Test_ExecuteConfigRepoAdd_IfAlreadyAdded(t *testing.T) {
-	tempFile, tempCleanup, err := config_handler.PrepareTestConfig(&config_model.ConfigModel{
-		Version: config_model.CurrentVersion,
-		DBPath:  "/tmp/test.db",
-		TrackedAuthor: config_model.ConfigAuthorModel{
-			Name: "Test User",
-			Emails: []string{
-				"test@example.com",
-			},
-		},
-		TrackedRepos: []string{},
-		TargetRepo: "test/repo",
-	})
+	// Prepare config
+	expectedConfig, err := config_model.NewConfigBuilder().
+		WithDBPath("/tmp/test.db").
+		WithTrackedAuthor("Test User", []string{"test@example.com"}).
+		WithTargetRepo("test/repo").
+		Build()
+
+	if err != nil {
+		t.Fatalf("Failed to build expected config: %v", err)
+	}
+
+	tempFile, tempCleanup, err := config_handler.PrepareTestConfig(expectedConfig)
 
 	if err != nil {
 		t.Fatalf("Failed to prepare test config: %v", err)
@@ -93,18 +93,18 @@ func Test_ExecuteConfigRepoAdd_IfAlreadyAdded(t *testing.T) {
 
 
 func Test_ExecuteConfigRepoAdd_InvalidPath(t *testing.T) {
-	tempFile, tempCleanup, err := config_handler.PrepareTestConfig(&config_model.ConfigModel{
-		Version: config_model.CurrentVersion,
-		DBPath:  "/tmp/test.db",
-		TrackedAuthor: config_model.ConfigAuthorModel{
-			Name: "Test User",
-			Emails: []string{
-				"test@example.com",
-			},
-		},
-		TrackedRepos: []string{},
-		TargetRepo: "test/repo",
-	})
+	// Prepare config
+	expectedConfig, err := config_model.NewConfigBuilder().
+		WithDBPath("/tmp/test.db").
+		WithTrackedAuthor("Test User", []string{"test@example.com"}).
+		WithTargetRepo("test/repo").
+		Build()
+
+	if err != nil {
+		t.Fatalf("Failed to build expected config: %v", err)
+	}
+
+	tempFile, tempCleanup, err := config_handler.PrepareTestConfig(expectedConfig)
 
 	if err != nil {
 		t.Fatalf("Failed to prepare test config: %v", err)

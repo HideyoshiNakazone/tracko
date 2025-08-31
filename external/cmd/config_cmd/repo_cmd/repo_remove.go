@@ -3,7 +3,6 @@ package repo_cmd
 import (
 	"errors"
 	"path/filepath"
-	"slices"
 
 	"github.com/HideyoshiNakazone/tracko/lib/config_handler"
 	"github.com/spf13/cobra"
@@ -26,12 +25,10 @@ func runRepoRemove(cmd *cobra.Command, args []string) error {
 		return errors.New("invalid repository path")
 	}
 
-	repoIndex := slices.Index(cfg.TrackedRepos, repoPath)
-	if repoIndex == -1 {
-		return errors.New("repository not found")
+	newCfg, err := cfg.RemoveTrackedRepo(repoPath)
+	if err != nil {
+		return err
 	}
 
-	cfg.TrackedRepos = slices.Delete(cfg.TrackedRepos, repoIndex, repoIndex+1)
-
-	return config_handler.SetConfig(cfg)
+	return config_handler.SetConfig(newCfg)
 }

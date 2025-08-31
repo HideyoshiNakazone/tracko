@@ -5,7 +5,7 @@ import (
 )
 
 
-func IsGitRepository(path *string) bool {
-	_, err := git.PlainOpen(*path)
+func IsGitRepository(path string) bool {
+	_, err := git.PlainOpen(path)
 	return err == nil
 }
