@@ -1,4 +1,4 @@
-package config
+package config_handler
 
 import (
 	"fmt"
@@ -7,6 +7,7 @@ import (
 	"github.com/go-viper/mapstructure/v2"
 	"github.com/spf13/viper"
 
+	"github.com/HideyoshiNakazone/tracko/lib/config_model"
 	"github.com/HideyoshiNakazone/tracko/lib/internal_errors"
 	"github.com/HideyoshiNakazone/tracko/lib/utils"
 )
@@ -34,13 +35,13 @@ func PrepareConfig(filePath string) error {
 	return err
 }
 
-func GetConfig() (*ConfigModel, error) {
+func GetConfig() (*config_model.ConfigModel, error) {
 	err := viper.ReadInConfig()
 	if err != nil {
 		return nil, internal_errors.ErrConfigNotInitialized
 	}
 
-	var cfg ConfigModel
+	var cfg config_model.ConfigModel
 	if err := viper.Unmarshal(&cfg); err != nil {
 		return nil, err
 	}
@@ -79,7 +80,7 @@ func GetConfigAttr[T any](key string) (T, error) {
 	return casted, nil
 }
 
-func SetConfig(cfg *ConfigModel) error {
+func SetConfig(cfg *config_model.ConfigModel) error {
 	m := map[string]any{}
 	if err := mapstructure.Decode(cfg, &m); err != nil {
 		return err
@@ -98,17 +99,17 @@ func SetConfigAttr(key string, value any) error {
 		return fmt.Errorf("failed to read config: %w", err)
 	}
 
-	if !utils.CheckModelHasField(ConfigModel{}, key) {
+	if !utils.CheckModelHasField(config_model.ConfigModel{}, key) {
 		return fmt.Errorf("field %q does not exist", key)
 	}
 
-	if utils.CheckModelHasTag(ConfigModel{}, key, "restricted", "true") {
+	if utils.CheckModelHasTag(config_model.ConfigModel{}, key, "restricted", "true") {
 		return fmt.Errorf("field %q is restricted and cannot be modified", key)
 	}
 
 	viper.Set(key, value)
 
-	var cfg ConfigModel
+	var cfg config_model.ConfigModel
 	if err := viper.Unmarshal(&cfg); err != nil {
 		viper.ReadInConfig()
 		return fmt.Errorf("failed to unmarshal config: %w", err)

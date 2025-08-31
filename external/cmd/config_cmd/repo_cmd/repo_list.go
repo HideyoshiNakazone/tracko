@@ -1,7 +1,7 @@
 package repo_cmd
 
 import (
-	"github.com/HideyoshiNakazone/tracko/lib/config"
+	"github.com/HideyoshiNakazone/tracko/lib/config_handler"
 	"github.com/spf13/cobra"
 )
 
@@ -12,7 +12,7 @@ var RepoListCmd = &cobra.Command{
 }
 
 func runRepoList(cmd *cobra.Command, args []string) error {
-	repos, err := config.GetConfigAttr[[]any]("tracked_repos")
+	repos, err := config_handler.GetConfigAttr[[]any]("tracked_repos")
 	if err != nil {
 		return err
 	}

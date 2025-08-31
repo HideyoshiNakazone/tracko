@@ -1,9 +1,10 @@
-package config
+package config_handler
 
 import (
 	"os"
 	"testing"
 
+	"github.com/HideyoshiNakazone/tracko/lib/config_model"
 	"github.com/spf13/viper"
 )
 
@@ -16,10 +17,10 @@ func TestSetAndGetConfig(t *testing.T) {
 	defer os.Remove(tempFile.Name())
 
 	// Prepare config
-	cfg := &ConfigModel{
+	cfg := &config_model.ConfigModel{
 		Version: "v1",
 		DBPath:  "/tmp/test.db",
-		TrackedAuthor: ConfigAuthorModel{
+		TrackedAuthor: config_model.ConfigAuthorModel{
 			Name:   "Test User",
 			Emails: []string{"test@example.com"},
 		},
@@ -74,10 +75,10 @@ func Test_SetConfigAttr(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, cleanup, err := PrepareTestConfig(&ConfigModel{
+			_, cleanup, err := PrepareTestConfig(&config_model.ConfigModel{
 				Version: "v1",
 				DBPath:  "/tmp/test.db",
-				TrackedAuthor: ConfigAuthorModel{
+				TrackedAuthor: config_model.ConfigAuthorModel{
 					Name:   "Test User",
 					Emails: []string{"test@example.com"},
 				},

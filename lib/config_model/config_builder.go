@@ -1,4 +1,4 @@
-package config
+package config_model
 
 import "github.com/HideyoshiNakazone/tracko/lib/internal_errors"
 

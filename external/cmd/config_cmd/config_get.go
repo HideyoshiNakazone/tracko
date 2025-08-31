@@ -3,7 +3,7 @@ package config_cmd
 import (
 	"errors"
 
-	"github.com/HideyoshiNakazone/tracko/lib/config"
+	"github.com/HideyoshiNakazone/tracko/lib/config_handler"
 	"github.com/spf13/cobra"
 )
 
@@ -19,7 +19,7 @@ func runConfigGet(cmd *cobra.Command, args []string) error {
 		return errors.New("invalid number of arguments")
 	}
 
-	value, err := config.GetConfigAttr[any](args[0])
+	value, err := config_handler.GetConfigAttr[any](args[0])
 	if err != nil {
 		return err
 	}

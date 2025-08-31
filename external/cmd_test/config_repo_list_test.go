@@ -5,15 +5,16 @@ import (
 	"testing"
 
 	"github.com/HideyoshiNakazone/tracko/external/cmd"
-	"github.com/HideyoshiNakazone/tracko/lib/config"
+	"github.com/HideyoshiNakazone/tracko/lib/config_handler"
+	"github.com/HideyoshiNakazone/tracko/lib/config_model"
 )
 
 
 func Test_ExecuteConfigRepoList(t *testing.T) {
-	expectedConfig := &config.ConfigModel{
-		Version: config.CurrentVersion,
+	expectedConfig := &config_model.ConfigModel{
+		Version: config_model.CurrentVersion,
 		DBPath:  "/tmp/test.db",
-		TrackedAuthor: config.ConfigAuthorModel{
+		TrackedAuthor: config_model.ConfigAuthorModel{
 			Name: "Test User",
 			Emails: []string{
 				"test@example.com",
@@ -26,7 +27,7 @@ func Test_ExecuteConfigRepoList(t *testing.T) {
 		TargetRepo: "test/repo",
 	}
 
-	tempFile, tempCleanup, err := config.PrepareTestConfig(expectedConfig)
+	tempFile, tempCleanup, err := config_handler.PrepareTestConfig(expectedConfig)
 
 	if err != nil {
 		t.Fatalf("Failed to prepare test config: %v", err)

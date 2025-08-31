@@ -8,7 +8,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/HideyoshiNakazone/tracko/external/cmd/config_cmd/repo_cmd"
-	"github.com/HideyoshiNakazone/tracko/lib/config"
+	"github.com/HideyoshiNakazone/tracko/lib/config_handler"
 )
 
 var ConfigCmd = &cobra.Command{
@@ -19,7 +19,7 @@ var ConfigCmd = &cobra.Command{
 
 func runConfig(cmd *cobra.Command, args []string) error {
 	// TODO: Implement import functionality
-	cfg, err := config.GetConfig()
+	cfg, err := config_handler.GetConfig()
 
 	if err != nil {
 		return fmt.Errorf("no valid config found: %w", err)

@@ -5,14 +5,15 @@ import (
 	"testing"
 
 	"github.com/HideyoshiNakazone/tracko/external/cmd"
-	"github.com/HideyoshiNakazone/tracko/lib/config"
+	"github.com/HideyoshiNakazone/tracko/lib/config_handler"
+	"github.com/HideyoshiNakazone/tracko/lib/config_model"
 )
 
 func Test_RunConfigSet(t *testing.T) {
-	tempFile, tempCleanup, err := config.PrepareTestConfig(&config.ConfigModel{
-		Version: config.CurrentVersion,
+	tempFile, tempCleanup, err := config_handler.PrepareTestConfig(&config_model.ConfigModel{
+		Version: config_model.CurrentVersion,
 		DBPath:  "/tmp/test.db",
-		TrackedAuthor: config.ConfigAuthorModel{
+		TrackedAuthor: config_model.ConfigAuthorModel{
 			Name: "Test User",
 			Emails: []string{
 				"test@example.com",
@@ -38,7 +39,7 @@ func Test_RunConfigSet(t *testing.T) {
 		t.Fatalf("Command execution failed: %v", err)
 	}
 
-	actualDBPath, err := config.GetConfigAttr[string]("db_path")
+	actualDBPath, err := config_handler.GetConfigAttr[string]("db_path")
 	if err != nil {
 		t.Fatalf("Failed to get config attribute: %v", err)
 	}
@@ -49,10 +50,10 @@ func Test_RunConfigSet(t *testing.T) {
 }
 
 func Test_RunConfigSet_InvalidKey(t *testing.T) {
-	tempFile, tempCleanup, err := config.PrepareTestConfig(&config.ConfigModel{
-		Version: config.CurrentVersion,
+	tempFile, tempCleanup, err := config_handler.PrepareTestConfig(&config_model.ConfigModel{
+		Version: config_model.CurrentVersion,
 		DBPath:  "/tmp/test.db",
-		TrackedAuthor: config.ConfigAuthorModel{
+		TrackedAuthor: config_model.ConfigAuthorModel{
 			Name: "Test User",
 			Emails: []string{
 				"test@example.com",
@@ -84,10 +85,10 @@ func Test_RunConfigSet_InvalidKey(t *testing.T) {
 }
 
 func Test_RunConfigSet_RestrictedKey(t *testing.T) {
-	tempFile, tempCleanup, err := config.PrepareTestConfig(&config.ConfigModel{
-		Version: config.CurrentVersion,
+	tempFile, tempCleanup, err := config_handler.PrepareTestConfig(&config_model.ConfigModel{
+		Version: config_model.CurrentVersion,
 		DBPath:  "/tmp/test.db",
-		TrackedAuthor: config.ConfigAuthorModel{
+		TrackedAuthor: config_model.ConfigAuthorModel{
 			Name: "Test User",
 			Emails: []string{
 				"test@example.com",
@@ -117,7 +118,7 @@ func Test_RunConfigSet_RestrictedKey(t *testing.T) {
 		t.Errorf("Expected error message to contain %q, but got %q", expectedErrorMsg, err.Error())
 	}
 
-	actualVersion, err := config.GetConfigAttr[string]("version")
+	actualVersion, err := config_handler.GetConfigAttr[string]("version")
 	if err != nil {
 		t.Fatalf("Failed to get config attribute: %v", err)
 	}

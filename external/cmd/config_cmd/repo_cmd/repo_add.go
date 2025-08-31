@@ -4,7 +4,8 @@ import (
 	"errors"
 	"path/filepath"
 
-	"github.com/HideyoshiNakazone/tracko/lib/config"
+	"github.com/HideyoshiNakazone/tracko/lib/config_handler"
+	"github.com/HideyoshiNakazone/tracko/lib/config_model"
 	"github.com/HideyoshiNakazone/tracko/lib/repo"
 	"github.com/spf13/cobra"
 )
@@ -17,7 +18,7 @@ var RepoAddCmd = &cobra.Command{
 }
 
 
-func validateRepoPath(cfg *config.ConfigModel, repoPath string) error {
+func validateRepoPath(cfg *config_model.ConfigModel, repoPath string) error {
 	if !repo.IsGitRepository(&repoPath) {
 		return errors.New("invalid git repository")
 	}
@@ -32,7 +33,7 @@ func validateRepoPath(cfg *config.ConfigModel, repoPath string) error {
 }
 
 func runRepoAdd(cmd *cobra.Command, args []string) error {
-	cfg, err := config.GetConfig()
+	cfg, err := config_handler.GetConfig()
 	if err != nil {
 		return err
 	}
@@ -53,5 +54,5 @@ func runRepoAdd(cmd *cobra.Command, args []string) error {
 
 	cfg.TrackedRepos = append(cfg.TrackedRepos, repoPath)
 
-	return config.SetConfig(cfg)
+	return config_handler.SetConfig(cfg)
 }

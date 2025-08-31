@@ -9,7 +9,7 @@ import (
 
 	"github.com/HideyoshiNakazone/tracko/external/cmd/config_cmd"
 	"github.com/HideyoshiNakazone/tracko/external/flags"
-	"github.com/HideyoshiNakazone/tracko/lib/config"
+	"github.com/HideyoshiNakazone/tracko/lib/config_handler"
 	"github.com/HideyoshiNakazone/tracko/lib/internal_errors"
 )
 
@@ -28,7 +28,7 @@ func Execute() {
 }
 
 func initConfig(cmd *cobra.Command, args []string) error {
-	err := config.PrepareConfig(flags.GetConfigPath())
+	err := config_handler.PrepareConfig(flags.GetConfigPath())
 	if err == nil {
 		return nil
 	}
