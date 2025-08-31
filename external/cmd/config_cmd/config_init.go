@@ -2,7 +2,8 @@ package config_cmd
 
 import (
 	"github.com/HideyoshiNakazone/tracko/external/flags"
-	"github.com/HideyoshiNakazone/tracko/lib/config"
+	"github.com/HideyoshiNakazone/tracko/lib/config_handler"
+	"github.com/HideyoshiNakazone/tracko/lib/config_model"
 	"github.com/HideyoshiNakazone/tracko/lib/utils"
 	"github.com/spf13/cobra"
 )
@@ -22,7 +23,7 @@ var ConfigInitCmd = &cobra.Command{
 }
 
 func runConfigInit(cmd *cobra.Command, args []string) error {
-	err := config.PrepareConfig(flags.GetConfigPath())
+	err := config_handler.PrepareConfig(flags.GetConfigPath())
 
 	if err == nil {
 		cmd.Println("Configuration already initialized.")
@@ -30,11 +31,11 @@ func runConfigInit(cmd *cobra.Command, args []string) error {
 	}
 
 	cmd.Println("Initializing configuration...")
-	var cfgBuilder = config.NewConfigBuilder()
+	var cfgBuilder = config_model.NewConfigBuilder()
 
 	if dbPath == "" {
-		cmd.Println("Using default database path: ", config.DefaultDBPath)
-		dbPath = config.DefaultDBPath
+		cmd.Println("Using default database path: ", config_model.DefaultDBPath)
+		dbPath = config_model.DefaultDBPath
 	}
 	cfgBuilder.WithDBPath(dbPath)
 
@@ -54,14 +55,14 @@ func runConfigInit(cmd *cobra.Command, args []string) error {
 	cfgBuilder.WithTargetRepo(targetRepo)
 
 	if cfg, err := cfgBuilder.Build(); err == nil {
-		config.SetConfig(cfg)
+		config_handler.SetConfig(cfg)
 		return nil
 	}
 	return err
 }
 
 func afterConfigInit(cmd *cobra.Command, args []string) error {
-	_, err := config.GetConfig()
+	_, err := config_handler.GetConfig()
 	if err != nil {
 		cmd.Println("There was an error initializing the configuration, please remove the config file and try again.")
 		return err

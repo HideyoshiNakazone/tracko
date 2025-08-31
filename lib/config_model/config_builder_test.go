@@ -1,4 +1,4 @@
-package config
+package config_model
 
 import (
 	"reflect"
@@ -22,14 +22,14 @@ func Test_ConfigBuilder(t *testing.T) {
 						}).
 						WithTargetRepo("repo1"),
             expected: &ConfigModel{
-				Version: 	 	CurrentVersion,
-				DBPath:        	"/tmp/test.db",
-				TrackedAuthor: ConfigAuthorModel{
-					Name:  "Test User",
-					Emails: []string{"test@example.com"},
+				version: 	 	CurrentVersion,
+				dbPath:        	"/tmp/test.db",
+				trackedAuthor: ConfigAuthorModel{
+					name:  "Test User",
+					emails: []string{"test@example.com"},
 				},
-				TargetRepo:   	"repo1",
-				TrackedRepos: 	[]string{},
+				targetRepo:   	"repo1",
+				trackedRepos: 	[]string{},
 			},
 			wantErr: 	false,
         },

@@ -9,7 +9,8 @@ import (
 	"github.com/HideyoshiNakazone/tracko/lib/config_model"
 )
 
-func Test_RunConfigSet(t *testing.T) {
+
+func Test_ExecuteConfigRepoAdd(t *testing.T) {
 	// Prepare config
 	expectedConfig, err := config_model.NewConfigBuilder().
 		WithDBPath("/tmp/test.db").
@@ -20,37 +21,39 @@ func Test_RunConfigSet(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to build expected config: %v", err)
 	}
-
+	
 	tempFile, tempCleanup, err := config_handler.PrepareTestConfig(expectedConfig)
+
 	if err != nil {
 		t.Fatalf("Failed to prepare test config: %v", err)
 	}
 	defer (*tempCleanup)()
 
-	expectedDBPath := "/tmp/test1.db"
-
 	cmd.RootCmd.SetArgs(
 		[]string{
 			"--config", tempFile.Name(),
-			"config", "set", "db_path", expectedDBPath,
+			"config", "repo", "add", "../..",
 		},
 	)
+	
+	var outputBuf bytes.Buffer
+	cmd.RootCmd.SetOut(&outputBuf)
 
 	if err := cmd.RootCmd.Execute(); err != nil {
 		t.Fatalf("Command execution failed: %v", err)
 	}
 
-	actualDBPath, err := config_handler.GetConfigAttr[string]("db_path")
+	cfg, err := config_handler.GetConfig()
 	if err != nil {
-		t.Fatalf("Failed to get config attribute: %v", err)
+		t.Fatalf("Failed to get config: %v", err)
 	}
 
-	if actualDBPath != expectedDBPath {
-		t.Errorf("Expected db_path to be %q, but got %q", expectedDBPath, actualDBPath)
+	if len(cfg.TrackedRepos()) != 1 {
+		t.Errorf("Expected 1 tracked repo, got %d", len(cfg.TrackedRepos()))
 	}
 }
 
-func Test_RunConfigSet_InvalidKey(t *testing.T) {
+func Test_ExecuteConfigRepoAdd_IfAlreadyAdded(t *testing.T) {
 	// Prepare config
 	expectedConfig, err := config_model.NewConfigBuilder().
 		WithDBPath("/tmp/test.db").
@@ -63,6 +66,7 @@ func Test_RunConfigSet_InvalidKey(t *testing.T) {
 	}
 
 	tempFile, tempCleanup, err := config_handler.PrepareTestConfig(expectedConfig)
+
 	if err != nil {
 		t.Fatalf("Failed to prepare test config: %v", err)
 	}
@@ -71,22 +75,24 @@ func Test_RunConfigSet_InvalidKey(t *testing.T) {
 	cmd.RootCmd.SetArgs(
 		[]string{
 			"--config", tempFile.Name(),
-			"config", "set", "invalid_key", "some_value",
+			"config", "repo", "add", "../..",
 		},
 	)
+	
+	var outputBuf bytes.Buffer
+	cmd.RootCmd.SetOut(&outputBuf)
 
-	err = cmd.RootCmd.Execute()
-	if err == nil {
-		t.Fatalf("Expected command to fail with invalid key, but it succeeded")
+	if err := cmd.RootCmd.Execute(); err != nil {
+		t.Fatalf("Command execution failed: %v", err)
 	}
 
-	expectedErrorMsg := "field \"invalid_key\" does not exist"
-	if !bytes.Contains([]byte(err.Error()), []byte(expectedErrorMsg)) {
-		t.Errorf("Expected error message to contain %q, but got %q", expectedErrorMsg, err.Error())
+	if err := cmd.RootCmd.Execute(); err == nil {
+		t.Fatalf("Command execution succeeded unexpectedly")
 	}
 }
 
-func Test_RunConfigSet_RestrictedKey(t *testing.T) {
+
+func Test_ExecuteConfigRepoAdd_InvalidPath(t *testing.T) {
 	// Prepare config
 	expectedConfig, err := config_model.NewConfigBuilder().
 		WithDBPath("/tmp/test.db").
@@ -99,6 +105,7 @@ func Test_RunConfigSet_RestrictedKey(t *testing.T) {
 	}
 
 	tempFile, tempCleanup, err := config_handler.PrepareTestConfig(expectedConfig)
+
 	if err != nil {
 		t.Fatalf("Failed to prepare test config: %v", err)
 	}
@@ -107,26 +114,14 @@ func Test_RunConfigSet_RestrictedKey(t *testing.T) {
 	cmd.RootCmd.SetArgs(
 		[]string{
 			"--config", tempFile.Name(),
-			"config", "set", "version", "restricted_value",
+			"config", "repo", "add", "/invalid/path",
 		},
 	)
 
-	err = cmd.RootCmd.Execute()
-	if err == nil {
-		t.Fatalf("Expected command to fail with restricted key, but it succeeded")
-	}
+	var outputBuf bytes.Buffer
+	cmd.RootCmd.SetOut(&outputBuf)
 
-	expectedErrorMsg := "field \"version\" is restricted and cannot be modified"
-	if !bytes.Contains([]byte(err.Error()), []byte(expectedErrorMsg)) {
-		t.Errorf("Expected error message to contain %q, but got %q", expectedErrorMsg, err.Error())
-	}
-
-	actualVersion, err := config_handler.GetConfigAttr[string]("version")
-	if err != nil {
-		t.Fatalf("Failed to get config attribute: %v", err)
-	}
-
-	if actualVersion != "v1" {
-		t.Errorf("Expected version to be %q, but got %q", "v1", actualVersion)
+	if err := cmd.RootCmd.Execute(); err == nil {
+		t.Fatalf("Command execution succeeded unexpectedly")
 	}
 }

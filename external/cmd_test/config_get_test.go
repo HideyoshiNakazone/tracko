@@ -6,24 +6,24 @@ import (
 	"testing"
 
 	"github.com/HideyoshiNakazone/tracko/external/cmd"
-	"github.com/HideyoshiNakazone/tracko/lib/config"
+	"github.com/HideyoshiNakazone/tracko/lib/config_handler"
+	"github.com/HideyoshiNakazone/tracko/lib/config_model"
 )
 
 
 func Test_ExecuteConfigGet(t *testing.T) {
-	expectedConfig := &config.ConfigModel{
-		Version: config.CurrentVersion,
-		DBPath:  "/tmp/test.db",
-		TrackedAuthor: config.ConfigAuthorModel{
-			Name: "Test User",
-			Emails: []string{
-				"test@example.com",
-			},
-		},
-		TargetRepo: "test/repo",
+	// Prepare config
+	expectedConfig, err := config_model.NewConfigBuilder().
+		WithDBPath("/tmp/test.db").
+		WithTrackedAuthor("Test User", []string{"test@example.com"}).
+		WithTargetRepo("test/repo").
+		Build()
+
+	if err != nil {
+		t.Fatalf("Failed to build expected config: %v", err)
 	}
 
-	tempFile, tempCleanup, err := config.PrepareTestConfig(expectedConfig)
+	tempFile, tempCleanup, err := config_handler.PrepareTestConfig(expectedConfig)
 	if err != nil {
 		t.Fatalf("Failed to prepare test config: %v", err)
 	}
@@ -38,37 +38,37 @@ func Test_ExecuteConfigGet(t *testing.T) {
 		{
 			name: "Get DB Path",
 			key:  "db_path",
-			expectedValue: expectedConfig.DBPath,
+			expectedValue: expectedConfig.DBPath(),
 			wantErr:        false,
 		},
 		{
 			name: "Get Version",
 			key:  "version",
-			expectedValue: expectedConfig.Version,
+			expectedValue: expectedConfig.Version(),
 			wantErr:        false,
 		},
 		{
 			name: "Get Tracked Author Name",
 			key:  "author.name",
-			expectedValue: expectedConfig.TrackedAuthor.Name,
+			expectedValue: expectedConfig.TrackedAuthor().Name(),
 			wantErr:        false,
 		},
 		{
 			name: "Get Tracked Author Emails",
 			key:  "author.emails",
-			expectedValue: expectedConfig.TrackedAuthor.Emails,
+			expectedValue: expectedConfig.TrackedAuthor().Emails(),
 			wantErr:        false,
 		},
 		{
 			name: "Get Target Repo",
 			key:  "target_repo",
-			expectedValue: expectedConfig.TargetRepo,
+			expectedValue: expectedConfig.TargetRepo(),
 			wantErr:        false,
 		},
 		{
 			name: "Get Tracked Repos",
 			key:  "tracked_repos",
-			expectedValue: expectedConfig.TrackedRepos,
+			expectedValue: expectedConfig.TrackedRepos(),
 			wantErr:        false,
 		},
 	}

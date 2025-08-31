@@ -3,7 +3,7 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 
-	"github.com/HideyoshiNakazone/tracko/lib/config"
+	"github.com/HideyoshiNakazone/tracko/lib/config_handler"
 )
 
 var ExportCmd = &cobra.Command{
@@ -14,7 +14,7 @@ var ExportCmd = &cobra.Command{
 
 func runExport(cmd *cobra.Command, args []string) {
 	// TODO: Implement import functionality
-	cfg, err := config.GetConfig()
+	cfg, err := config_handler.GetConfig()
 
 	if err != nil {
 		cmd.Print("No valid config found.")

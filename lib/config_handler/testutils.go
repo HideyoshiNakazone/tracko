@@ -1,11 +1,13 @@
-package config
+package config_handler
 
 import (
 	"errors"
 	"os"
+
+	"github.com/HideyoshiNakazone/tracko/lib/config_model"
 )
 
-func PrepareTestConfig(cfg *ConfigModel) (*os.File, *func(), error) {
+func PrepareTestConfig(cfg *config_model.ConfigModel) (*os.File, *func(), error) {
 	tempFile, err := os.CreateTemp("", "tracko_test_config_*.yaml")
 	if err != nil {
 		return nil, nil, err
