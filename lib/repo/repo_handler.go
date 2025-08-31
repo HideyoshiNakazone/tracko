@@ -17,7 +17,6 @@ func IsGitRepository(path string) bool {
 	return err == nil
 }
 
-
 // Commit metadata
 type GitCommitMeta struct {
 	AuthorName  string
@@ -50,7 +49,7 @@ type CommitIter interface {
 
 // commitIterator implements object.CommitIter.
 type commitIterator struct {
-	iter   	object.CommitIter
+	iter    object.CommitIter
 	filters func(*GitCommitMeta) bool
 }
 
@@ -96,13 +95,11 @@ func (it *commitIterator) Close() {
 // Checks that commitIterator implements CommitIter
 var _ CommitIter = &commitIterator{}
 
-
 // TrackedRepo represents a Git repository being tracked.
 type TrackedRepo struct {
-	repo 	*git.Repository
-	author 	*config_model.ConfigAuthorModel
+	repo   *git.Repository
+	author *config_model.ConfigAuthorModel
 }
-
 
 func NewTrackedRepo(path string, author *config_model.ConfigAuthorModel) (*TrackedRepo, error) {
 	if path == "" {
@@ -115,19 +112,16 @@ func NewTrackedRepo(path string, author *config_model.ConfigAuthorModel) (*Track
 	}
 
 	return &TrackedRepo{
-		repo:  gitRepo,
+		repo:   gitRepo,
 		author: author,
 	}, nil
 }
 
-
-
 type ListRepositoryHistoryParams struct {
-	Author 	*config_model.ConfigAuthorModel
-	Since   *time.Time
-	Until   *time.Time
+	Author *config_model.ConfigAuthorModel
+	Since  *time.Time
+	Until  *time.Time
 }
-
 
 // buildDefaultListRepoHistoryParams builds default filtering params based on the tracked author.
 func (r *TrackedRepo) buildDefaultListRepoHistoryParams() *ListRepositoryHistoryParams {
@@ -139,12 +133,11 @@ func (r *TrackedRepo) buildDefaultListRepoHistoryParams() *ListRepositoryHistory
 	}
 }
 
-
 func (r *TrackedRepo) ListRepositoryHistory(options *ListRepositoryHistoryParams) (CommitIter, error) {
 	if r.repo == nil {
 		return nil, fmt.Errorf("repository not initialized")
 	}
-	
+
 	if options == nil {
 		options = r.buildDefaultListRepoHistoryParams()
 	}
@@ -174,7 +167,7 @@ func (r *TrackedRepo) ListRepositoryHistory(options *ListRepositoryHistoryParams
 	}
 
 	return &commitIterator{
-		iter:   iter,
+		iter:    iter,
 		filters: filter,
 	}, nil
 }

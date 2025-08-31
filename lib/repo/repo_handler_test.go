@@ -95,7 +95,6 @@ func Test_NewTrackedRepo(t *testing.T) {
 	}
 }
 
-
 func Test_ListRepositoryHistory_With_ForEach(t *testing.T) {
 	numberOfCommits := 100
 
@@ -152,7 +151,7 @@ func Test_ListRepositoryHistory_With_ForEach(t *testing.T) {
 			defer iter.Close()
 
 			commitCount := 0
-			iter.ForEach(func (meta *GitCommitMeta) error {
+			iter.ForEach(func(meta *GitCommitMeta) error {
 				commitCount++
 				return nil
 			})
@@ -163,7 +162,6 @@ func Test_ListRepositoryHistory_With_ForEach(t *testing.T) {
 		})
 	}
 }
-
 
 func Test_ListRepositoryHistory_With_Next(t *testing.T) {
 	numberOfCommits := 100
