@@ -118,19 +118,8 @@ func NewTrackedRepo(path string, author *config_model.ConfigAuthorModel) (*Track
 }
 
 type ListRepositoryHistoryParams struct {
-	Author *config_model.ConfigAuthorModel
 	Since  *time.Time
 	Until  *time.Time
-}
-
-// buildDefaultListRepoHistoryParams builds default filtering params based on the tracked author.
-func (r *TrackedRepo) buildDefaultListRepoHistoryParams() *ListRepositoryHistoryParams {
-	if r.author == nil {
-		return &ListRepositoryHistoryParams{}
-	}
-	return &ListRepositoryHistoryParams{
-		Author: r.author,
-	}
 }
 
 func (r *TrackedRepo) ListRepositoryHistory(options *ListRepositoryHistoryParams) (CommitIter, error) {
@@ -139,7 +128,7 @@ func (r *TrackedRepo) ListRepositoryHistory(options *ListRepositoryHistoryParams
 	}
 
 	if options == nil {
-		options = r.buildDefaultListRepoHistoryParams()
+		options = &ListRepositoryHistoryParams{}
 	}
 
 	iter, err := r.repo.Log(&git.LogOptions{
@@ -151,15 +140,15 @@ func (r *TrackedRepo) ListRepositoryHistory(options *ListRepositoryHistoryParams
 	}
 
 	filter := func(meta *GitCommitMeta) bool {
-		if options.Author == nil || meta.AuthorName == "" {
+		if r.author == nil || meta.AuthorName == "" {
 			// Filters by Author by default, therefore these values are needed
 			return false
 		}
 
-		if options.Author.Name() != meta.AuthorName {
+		if r.author.Name() != meta.AuthorName {
 			return false
 		}
-		if !slices.Contains(options.Author.Emails(), meta.AuthorEmail) {
+		if !slices.Contains(r.author.Emails(), meta.AuthorEmail) {
 			return false
 		}
 

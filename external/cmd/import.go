@@ -3,6 +3,7 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 
+	"github.com/HideyoshiNakazone/tracko/lib"
 	"github.com/HideyoshiNakazone/tracko/lib/config_handler"
 )
 
@@ -21,6 +22,5 @@ func runImport(cmd *cobra.Command, args []string) {
 		return
 	}
 
-	cmd.Print("Importing Git commit history...")
-	cmd.Println(cfg)
+	lib.ImportTrackedRepos(cfg)
 }

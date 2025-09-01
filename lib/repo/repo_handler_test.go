@@ -1,14 +1,7 @@
 package repo
 
 import (
-	"fmt"
-	"io/ioutil"
-	"os"
 	"testing"
-	"time"
-
-	"github.com/go-git/go-git/v6"
-	"github.com/go-git/go-git/v6/plumbing/object"
 
 	"github.com/HideyoshiNakazone/tracko/lib/config_model"
 )
@@ -98,14 +91,14 @@ func Test_NewTrackedRepo(t *testing.T) {
 func Test_ListRepositoryHistory_With_ForEach(t *testing.T) {
 	numberOfCommits := 100
 
-	author := config_model.AuthorDTO{
+	testAuthor := config_model.AuthorDTO{
 		Name: "Test User",
 		Emails: []string{
 			"testuser@example.com",
 		},
 	}.ToModel()
 
-	repoPath, cleanup, err := prepareTestRepo(author, numberOfCommits)
+	repoPath, cleanup, err := PrepareTestRepo(testAuthor, numberOfCommits)
 	if err != nil {
 		t.Fatalf("Failed to prepare test repo: %v", err)
 	}
@@ -113,33 +106,32 @@ func Test_ListRepositoryHistory_With_ForEach(t *testing.T) {
 
 	tests := []struct {
 		name          string
+		author		  *config_model.ConfigAuthorModel
 		params        *ListRepositoryHistoryParams
 		expectedCount int
 	}{
 		{
 			name: "Test User",
-			params: &ListRepositoryHistoryParams{
-				Author: author,
-			},
+			author: testAuthor,
+			params: &ListRepositoryHistoryParams{},
 			expectedCount: numberOfCommits,
 		},
 		{
 			name: "Other User",
-			params: &ListRepositoryHistoryParams{
-				Author: config_model.AuthorDTO{
-					Name: "Invalid User",
-					Emails: []string{
-						"invalid_user@example.com",
-					},
-				}.ToModel(),
-			},
+			author: config_model.AuthorDTO{
+				Name: "Invalid User",
+				Emails: []string{
+					"invalid_user@example.com",
+				},
+			}.ToModel(),
+			params: &ListRepositoryHistoryParams{},
 			expectedCount: 0,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			tracked, err := NewTrackedRepo(*repoPath, author)
+			tracked, err := NewTrackedRepo(*repoPath, tt.author)
 			if err != nil {
 				t.Fatalf("Failed to create tracked repo: %v", err)
 			}
@@ -166,14 +158,14 @@ func Test_ListRepositoryHistory_With_ForEach(t *testing.T) {
 func Test_ListRepositoryHistory_With_Next(t *testing.T) {
 	numberOfCommits := 100
 
-	author := config_model.AuthorDTO{
+	testAuthor := config_model.AuthorDTO{
 		Name: "Test User",
 		Emails: []string{
 			"testuser@example.com",
 		},
 	}.ToModel()
 
-	repoPath, cleanup, err := prepareTestRepo(author, numberOfCommits)
+	repoPath, cleanup, err := PrepareTestRepo(testAuthor, numberOfCommits)
 	if err != nil {
 		t.Fatalf("Failed to prepare test repo: %v", err)
 	}
@@ -181,33 +173,32 @@ func Test_ListRepositoryHistory_With_Next(t *testing.T) {
 
 	tests := []struct {
 		name          string
+		author        *config_model.ConfigAuthorModel
 		params        *ListRepositoryHistoryParams
 		expectedCount int
 	}{
 		{
 			name: "Test User",
-			params: &ListRepositoryHistoryParams{
-				Author: author,
-			},
+			author: testAuthor,
+			params: &ListRepositoryHistoryParams{},
 			expectedCount: numberOfCommits,
 		},
 		{
 			name: "Other User",
-			params: &ListRepositoryHistoryParams{
-				Author: config_model.AuthorDTO{
-					Name: "Invalid User",
-					Emails: []string{
-						"invalid_user@example.com",
-					},
-				}.ToModel(),
-			},
+			author: config_model.AuthorDTO{
+				Name: "Invalid User",
+				Emails: []string{
+					"invalid_user@example.com",
+				},
+			}.ToModel(),
+			params: &ListRepositoryHistoryParams{},
 			expectedCount: 0,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			tracked, err := NewTrackedRepo(*repoPath, author)
+			tracked, err := NewTrackedRepo(*repoPath, tt.author)
 			if err != nil {
 				t.Fatalf("Failed to create tracked repo: %v", err)
 			}
@@ -234,46 +225,3 @@ func Test_ListRepositoryHistory_With_Next(t *testing.T) {
 	}
 }
 
-func prepareTestRepo(author *config_model.ConfigAuthorModel, numberOfCommits int) (*string, *func(), error) {
-	tempDir, err := ioutil.TempDir("", "tempdir-*")
-	if err != nil {
-		return nil, nil, err
-	}
-
-	cleanup := func() {
-		os.RemoveAll(tempDir)
-	}
-
-	repo, err := git.PlainInit(tempDir, false)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	cfg, err := repo.Config()
-	if err != nil || author == nil || len(author.Emails()) == 0 {
-		return nil, nil, err
-	}
-	cfg.User.Name = author.Name()
-	cfg.User.Email = author.Emails()[0]
-
-	w, err := repo.Worktree()
-	if err != nil {
-		return nil, nil, err
-	}
-
-	for i := 1; i <= numberOfCommits; i++ {
-		_, err := w.Commit(fmt.Sprintf("Empty commit %d", i), &git.CommitOptions{
-			Author: &object.Signature{
-				Name:  author.Name(),
-				Email: author.Emails()[0],
-				When:  time.Now().Add(time.Duration(i) * time.Second),
-			},
-			AllowEmptyCommits: true,
-		})
-		if err != nil {
-			return nil, nil, err
-		}
-	}
-
-	return &tempDir, &cleanup, nil
-}
