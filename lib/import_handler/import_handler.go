@@ -1,4 +1,4 @@
-package lib
+package import_handler
 
 import (
 	"fmt"
@@ -19,6 +19,13 @@ func processTrackedRepos(commitIter *repo.CommitIter, ch chan *repo.GitCommitMet
 		ch <- meta
 		return nil
 	})
+}
+
+func processCommits(ch chan *repo.GitCommitMeta) {
+	for commit := range ch {
+		fmt.Println(commit)
+	}
+	close(ch)
 }
 
 func ImportTrackedRepos(cfg *config_model.ConfigModel) error {
@@ -43,12 +50,7 @@ func ImportTrackedRepos(cfg *config_model.ConfigModel) error {
 		go processTrackedRepos(&commitIter, commitChannel)
 	}
 
-	go func() {
-		for commit := range commitChannel {
-			fmt.Println(commit)
-		}
-		close(commitChannel)
-	}()
+	go processCommits(commitChannel)
 
 	return nil
 }

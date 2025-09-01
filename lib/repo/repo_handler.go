@@ -21,12 +21,16 @@ func IsGitRepository(path string) bool {
 type GitCommitMeta struct {
 	AuthorName  string
 	AuthorEmail string
+	RepoPath    string
 	CommitID    string
 	CommitDate  time.Time
 	Message     string
 }
 
-func GitCommitMetaFromObject(commit *object.Commit) (*GitCommitMeta, error) {
+func GitCommitMetaFromObject(
+	repoPath string,
+	commit *object.Commit,
+) (*GitCommitMeta, error) {
 	if commit == nil {
 		return nil, errors.New("commit is nil")
 	}
@@ -34,6 +38,7 @@ func GitCommitMetaFromObject(commit *object.Commit) (*GitCommitMeta, error) {
 	return &GitCommitMeta{
 		AuthorName:  commit.Author.Name,
 		AuthorEmail: commit.Author.Email,
+		RepoPath:    repoPath,
 		CommitID:    commit.ID().String(),
 		CommitDate:  commit.Author.When,
 		Message:     commit.Message,
@@ -49,8 +54,9 @@ type CommitIter interface {
 
 // commitIterator implements object.CommitIter.
 type commitIterator struct {
-	iter    object.CommitIter
-	filters func(*GitCommitMeta) bool
+	repoPath string
+	iter     object.CommitIter
+	filters  func(*GitCommitMeta) bool
 }
 
 // Next advances the iterator and returns the next matching commit.
@@ -60,7 +66,7 @@ func (it *commitIterator) Next() (*GitCommitMeta, error) {
 		return nil, err
 	}
 
-	meta, err := GitCommitMetaFromObject(commit)
+	meta, err := GitCommitMetaFromObject(it.repoPath, commit)
 	if err != nil {
 		return nil, err
 	}
@@ -97,8 +103,9 @@ var _ CommitIter = &commitIterator{}
 
 // TrackedRepo represents a Git repository being tracked.
 type TrackedRepo struct {
-	repo   *git.Repository
-	author *config_model.ConfigAuthorModel
+	repoPath string
+	repo     *git.Repository
+	author   *config_model.ConfigAuthorModel
 }
 
 func NewTrackedRepo(path string, author *config_model.ConfigAuthorModel) (*TrackedRepo, error) {
@@ -112,8 +119,9 @@ func NewTrackedRepo(path string, author *config_model.ConfigAuthorModel) (*Track
 	}
 
 	return &TrackedRepo{
-		repo:   gitRepo,
-		author: author,
+		repoPath: path,
+		repo:     gitRepo,
+		author:   author,
 	}, nil
 }
 
@@ -156,7 +164,8 @@ func (r *TrackedRepo) ListRepositoryHistory(options *ListRepositoryHistoryParams
 	}
 
 	return &commitIterator{
-		iter:    iter,
-		filters: filter,
+		iter:     iter,
+		filters:  filter,
+		repoPath: r.repoPath,
 	}, nil
 }
