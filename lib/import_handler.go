@@ -7,7 +7,6 @@ import (
 	"github.com/HideyoshiNakazone/tracko/lib/repo"
 )
 
-
 func processTrackedRepos(commitIter *repo.CommitIter, ch chan *repo.GitCommitMeta) {
 	if commitIter == nil || ch == nil {
 		return

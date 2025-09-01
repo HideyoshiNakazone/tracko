@@ -106,14 +106,14 @@ func Test_ListRepositoryHistory_With_ForEach(t *testing.T) {
 
 	tests := []struct {
 		name          string
-		author		  *config_model.ConfigAuthorModel
+		author        *config_model.ConfigAuthorModel
 		params        *ListRepositoryHistoryParams
 		expectedCount int
 	}{
 		{
-			name: "Test User",
-			author: testAuthor,
-			params: &ListRepositoryHistoryParams{},
+			name:          "Test User",
+			author:        testAuthor,
+			params:        &ListRepositoryHistoryParams{},
 			expectedCount: numberOfCommits,
 		},
 		{
@@ -124,7 +124,7 @@ func Test_ListRepositoryHistory_With_ForEach(t *testing.T) {
 					"invalid_user@example.com",
 				},
 			}.ToModel(),
-			params: &ListRepositoryHistoryParams{},
+			params:        &ListRepositoryHistoryParams{},
 			expectedCount: 0,
 		},
 	}
@@ -178,9 +178,9 @@ func Test_ListRepositoryHistory_With_Next(t *testing.T) {
 		expectedCount int
 	}{
 		{
-			name: "Test User",
-			author: testAuthor,
-			params: &ListRepositoryHistoryParams{},
+			name:          "Test User",
+			author:        testAuthor,
+			params:        &ListRepositoryHistoryParams{},
 			expectedCount: numberOfCommits,
 		},
 		{
@@ -191,7 +191,7 @@ func Test_ListRepositoryHistory_With_Next(t *testing.T) {
 					"invalid_user@example.com",
 				},
 			}.ToModel(),
-			params: &ListRepositoryHistoryParams{},
+			params:        &ListRepositoryHistoryParams{},
 			expectedCount: 0,
 		},
 	}
@@ -224,4 +224,3 @@ func Test_ListRepositoryHistory_With_Next(t *testing.T) {
 		})
 	}
 }
-

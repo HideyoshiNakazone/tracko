@@ -11,7 +11,6 @@ import (
 	"github.com/go-git/go-git/v6/plumbing/object"
 )
 
-
 func PrepareTestRepo(author *config_model.ConfigAuthorModel, numberOfCommits int) (*string, *func(), error) {
 	tempDir, err := ioutil.TempDir("", "tempdir-*")
 	if err != nil {

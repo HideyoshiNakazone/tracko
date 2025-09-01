@@ -118,8 +118,8 @@ func NewTrackedRepo(path string, author *config_model.ConfigAuthorModel) (*Track
 }
 
 type ListRepositoryHistoryParams struct {
-	Since  *time.Time
-	Until  *time.Time
+	Since *time.Time
+	Until *time.Time
 }
 
 func (r *TrackedRepo) ListRepositoryHistory(options *ListRepositoryHistoryParams) (CommitIter, error) {

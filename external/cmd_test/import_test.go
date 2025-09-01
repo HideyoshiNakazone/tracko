@@ -10,7 +10,6 @@ import (
 	"github.com/HideyoshiNakazone/tracko/lib/repo"
 )
 
-
 func Test_ExecuteImport(t *testing.T) {
 	numberOfCommits := 100
 
