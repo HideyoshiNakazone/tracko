@@ -5,6 +5,7 @@ import (
 
 	"github.com/HideyoshiNakazone/tracko/lib/config_model"
 	"github.com/HideyoshiNakazone/tracko/lib/repo"
+	"github.com/HideyoshiNakazone/tracko/lib/state"
 )
 
 func processTrackedRepos(commitIter *repo.CommitIter, ch chan *repo.GitCommitMeta) {
@@ -21,10 +22,22 @@ func processTrackedRepos(commitIter *repo.CommitIter, ch chan *repo.GitCommitMet
 	})
 }
 
-func processCommits(ch chan *repo.GitCommitMeta) {
-	for commit := range ch {
-		fmt.Println(commit)
+func processCommits(cfg *config_model.ConfigModel, ch chan *repo.GitCommitMeta) {
+	state_repo, err := state.NewStateRepository(cfg.DBPath())
+	if err != nil {
+		fmt.Printf("Failed to create state repository: %v\n", err)
+		return
 	}
+	for commit := range ch {
+		state_repo.Create(state.NewCommitStateFromMetadata(commit))
+	}
+
+	commitsSaved, err := state_repo.List()
+	if err != nil {
+		fmt.Printf("Failed to list commits: %v\n", err)
+		return
+	}
+	fmt.Println(len(commitsSaved))
 	close(ch)
 }
 
@@ -50,7 +63,7 @@ func ImportTrackedRepos(cfg *config_model.ConfigModel) error {
 		go processTrackedRepos(&commitIter, commitChannel)
 	}
 
-	go processCommits(commitChannel)
+	go processCommits(cfg, commitChannel)
 
 	return nil
 }

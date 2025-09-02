@@ -42,7 +42,7 @@ func prepareTestConfig() (*config_model.ConfigModel, func(), error) {
 	}
 
 	cfg, err := config_model.NewConfigBuilder().
-		WithDBPath("/tmp/test.db").
+		WithDBPath(":memory:").
 		WithTrackedAuthor(testAuthor.Name(), testAuthor.Emails()).
 		WithTargetRepo("repo1").
 		WithTrackedRepos([]string{
