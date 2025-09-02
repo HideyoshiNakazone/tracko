@@ -7,6 +7,7 @@ import (
 	"github.com/HideyoshiNakazone/tracko/lib/config_model"
 	"github.com/HideyoshiNakazone/tracko/lib/repo"
 	"github.com/HideyoshiNakazone/tracko/lib/state"
+	"github.com/HideyoshiNakazone/tracko/lib/utils"
 )
 
 func processTrackedRepos(repoPath string, state_repo *state.StateRepository, cfg *config_model.ConfigModel, ch chan *repo.GitCommitMeta, wg *sync.WaitGroup) {
@@ -38,19 +39,15 @@ func processTrackedRepos(repoPath string, state_repo *state.StateRepository, cfg
 
 func processCommits(state_repo *state.StateRepository, ch chan *repo.GitCommitMeta) {
 	batchSize := 1_000
-	batch := make([]*state.CommitState, 0, batchSize)
 
-	for commit := range ch {
-		fmt.Printf("Read commit: %s\n", commit.CommitID)
-		batch = append(batch, state.NewCommitStateFromMetadata(commit))
-
-		if len(batch) == batchSize {
-			state_repo.BulkCreate(batch)
-			batch = batch[:0]
+	for batch := range utils.PartitionChannel(ch, batchSize) {
+		err := state_repo.BulkCreate(
+			utils.Map(batch, state.NewCommitStateFromMetadata),
+		)
+		if err != nil {
+			fmt.Printf("Failed to bulk create commits: %v\n", err)
+			return
 		}
-	}
-	if len(batch) > 0 {
-		state_repo.BulkCreate(batch)
 	}
 
 	commitCount, err := state_repo.Count()

@@ -11,14 +11,14 @@ import (
 )
 
 type CommitState struct {
-	Id         uint      `gorm:"primaryKey"`              // Primary key
-	Name       string    `gorm:"size:100;not null"`       // VARCHAR(100), NOT NULL
-	Email      string    `gorm:"size:100;not null"`       // VARCHAR(100), NOT NULL
-	RepoPath   string    `gorm:"size:255;not null"`       // VARCHAR(255), NOT NULL
-	CommitID   string    `gorm:"size:40;not null;unique"` // VARCHAR(40), NOT NULL
-	CommitDate time.Time `gorm:"not null"`                // TIMESTAMP, NOT NULL
-	Message    string    `gorm:"type:text;not null"`      // TEXT, NOT NULL
-	Exported   bool      `gorm:"default:false;not null"`  // BOOLEAN, NOT NULL
+	Id         uint      `gorm:"primaryKey"`              							// Primary key
+	Name       string    `gorm:"size:100;not null"`       							// VARCHAR(100), NOT NULL
+	Email      string    `gorm:"size:100;not null"`       							// VARCHAR(100), NOT NULL
+	RepoPath   string    `gorm:"size:255;not null;uniqueIndex:idx_repo_commit_id"`  // VARCHAR(255), NOT NULL
+	CommitID   string    `gorm:"size:40;not null;uniqueIndex:idx_repo_commit_id"` 	// VARCHAR(40), NOT NULL
+	CommitDate time.Time `gorm:"not null"`                							// TIMESTAMP, NOT NULL
+	Message    string    `gorm:"type:text;not null"`      							// TEXT, NOT NULL
+	Exported   bool      `gorm:"default:false;not null"`  							// BOOLEAN, NOT NULL
 }
 
 func NewCommitState(name, email, repoPath, commitId, message string, commitDate time.Time) *CommitState {
