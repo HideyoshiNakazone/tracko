@@ -9,7 +9,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/HideyoshiNakazone/tracko/lib/config_model"
+	config_model "github.com/HideyoshiNakazone/tracko/lib/config/model"
 	"github.com/go-git/go-git/v6"
 	"github.com/go-git/go-git/v6/plumbing/object"
 )

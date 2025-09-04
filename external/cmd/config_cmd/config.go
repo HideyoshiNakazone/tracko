@@ -8,7 +8,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/HideyoshiNakazone/tracko/external/cmd/config_cmd/repo_cmd"
-	"github.com/HideyoshiNakazone/tracko/lib/config_handler"
+	config_handler "github.com/HideyoshiNakazone/tracko/lib/config/handler"
 )
 
 var ConfigCmd = &cobra.Command{

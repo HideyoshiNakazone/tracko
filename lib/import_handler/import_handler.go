@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/HideyoshiNakazone/tracko/lib/config_model"
+	config_model "github.com/HideyoshiNakazone/tracko/lib/config/model"
 	"github.com/HideyoshiNakazone/tracko/lib/repo"
 	"github.com/HideyoshiNakazone/tracko/lib/state"
 	"github.com/HideyoshiNakazone/tracko/lib/utils"

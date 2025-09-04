@@ -3,7 +3,7 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 
-	"github.com/HideyoshiNakazone/tracko/lib/config_handler"
+	config_handler "github.com/HideyoshiNakazone/tracko/lib/config/handler"
 	"github.com/HideyoshiNakazone/tracko/lib/import_handler"
 )
 

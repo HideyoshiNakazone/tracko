@@ -9,7 +9,7 @@ import (
 
 	"github.com/HideyoshiNakazone/tracko/external/cmd/config_cmd"
 	"github.com/HideyoshiNakazone/tracko/external/flags"
-	"github.com/HideyoshiNakazone/tracko/lib/config_handler"
+	config_handler "github.com/HideyoshiNakazone/tracko/lib/config/handler"
 	"github.com/HideyoshiNakazone/tracko/lib/internal_errors"
 )
 

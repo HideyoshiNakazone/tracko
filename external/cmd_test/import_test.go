@@ -5,8 +5,8 @@ import (
 	"testing"
 
 	"github.com/HideyoshiNakazone/tracko/external/cmd"
-	"github.com/HideyoshiNakazone/tracko/lib/config_handler"
-	"github.com/HideyoshiNakazone/tracko/lib/config_model"
+	config_handler "github.com/HideyoshiNakazone/tracko/lib/config/handler"
+	config_model "github.com/HideyoshiNakazone/tracko/lib/config/model"
 	"github.com/HideyoshiNakazone/tracko/lib/repo"
 )
 

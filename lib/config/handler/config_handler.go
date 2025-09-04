@@ -7,7 +7,7 @@ import (
 	"github.com/go-viper/mapstructure/v2"
 	"github.com/spf13/viper"
 
-	"github.com/HideyoshiNakazone/tracko/lib/config_model"
+	"github.com/HideyoshiNakazone/tracko/lib/config/model"
 	"github.com/HideyoshiNakazone/tracko/lib/internal_errors"
 	"github.com/HideyoshiNakazone/tracko/lib/utils"
 )

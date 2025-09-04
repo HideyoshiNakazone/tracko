@@ -3,7 +3,7 @@ package repo
 import (
 	"testing"
 
-	"github.com/HideyoshiNakazone/tracko/lib/config_model"
+	config_model "github.com/HideyoshiNakazone/tracko/lib/config/model"
 )
 
 func Test_IsGitRepository(t *testing.T) {

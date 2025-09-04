@@ -7,7 +7,7 @@ import (
 	"errors"
 	"os"
 
-	"github.com/HideyoshiNakazone/tracko/lib/config_model"
+	"github.com/HideyoshiNakazone/tracko/lib/config/model"
 )
 
 func PrepareTestConfig(cfg *config_model.ConfigModel) (*os.File, *func(), error) {

@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/HideyoshiNakazone/tracko/lib/config_model"
+	config_model "github.com/HideyoshiNakazone/tracko/lib/config/model"
 	"github.com/spf13/viper"
 )
 
