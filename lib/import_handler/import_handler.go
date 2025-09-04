@@ -23,6 +23,9 @@ func processTrackedRepos(repoPath string, state_repo *state.StateRepository, cfg
 	lastCommit, err := state_repo.GetLastRepoCommit(repoPath)
 	if err == nil {
 		listParams.Since = &lastCommit.CommitDate
+	} else {
+		fmt.Println("No last commit found, importing all commits")
+		err = nil
 	}
 
 	commitIter, err := trackedRepo.ListRepositoryHistory(&listParams)
