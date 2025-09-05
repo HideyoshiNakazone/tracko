@@ -8,6 +8,7 @@ import (
 
 	config_model "github.com/HideyoshiNakazone/tracko/lib/config/model"
 	"github.com/go-git/go-git/v6"
+	"github.com/go-git/go-git/v6/plumbing"
 	"github.com/go-git/go-git/v6/plumbing/object"
 	"github.com/go-git/go-git/v6/plumbing/storer"
 )
@@ -127,6 +128,7 @@ func NewTrackedRepo(path string, author *config_model.ConfigAuthorModel) (*Track
 }
 
 type ListRepositoryHistoryParams struct {
+	From  *string
 	Since *time.Time
 	Until *time.Time
 }
@@ -140,10 +142,16 @@ func (r *TrackedRepo) ListRepositoryHistory(options *ListRepositoryHistoryParams
 		options = &ListRepositoryHistoryParams{}
 	}
 
-	iter, err := r.repo.Log(&git.LogOptions{
+	log_options := &git.LogOptions{
 		Since: options.Since,
 		Until: options.Until,
-	})
+	}
+
+	if options.From != nil {
+		log_options.From = plumbing.NewHash(*options.From)
+	}
+
+	iter, err := r.repo.Log(log_options)
 	if err != nil {
 		return nil, err
 	}

@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"bytes"
+	"os"
 	"testing"
 
 	"github.com/HideyoshiNakazone/tracko/external/cmd"
@@ -26,9 +27,14 @@ func Test_ExecuteImport(t *testing.T) {
 	}
 	defer (*cleanup)()
 
+	tempFile, err := os.CreateTemp("", "test_*.db")
+	if err != nil {
+		t.Fatalf("Failed to create temp db file: %v", err)
+	}
+
 	// Prepare config
 	expectedConfig, err := config_model.NewConfigBuilder().
-		WithDBPath("/tmp/test.db").
+		WithDBPath(tempFile.Name()).
 		WithTrackedAuthor(testAuthor.Name(), testAuthor.Emails()).
 		WithTargetRepo("test/repo").
 		WithTrackedRepos([]string{*repoPath}).

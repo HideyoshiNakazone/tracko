@@ -1,6 +1,7 @@
 package import_handler
 
 import (
+	"os"
 	"testing"
 
 	config_handler "github.com/HideyoshiNakazone/tracko/lib/config/handler"
@@ -31,6 +32,11 @@ func prepareTestConfig() (*config_model.ConfigModel, func(), error) {
 		},
 	}.ToModel()
 
+	tempFile, err := os.CreateTemp("", "test*.db")
+	if err != nil {
+		return nil, nil, err
+	}
+
 	repoPath1, repo_cleanup1, err := repo.PrepareTestRepo(testAuthor, numberOfCommits)
 	if err != nil {
 		return nil, nil, err
@@ -42,7 +48,7 @@ func prepareTestConfig() (*config_model.ConfigModel, func(), error) {
 	}
 
 	cfg, err := config_model.NewConfigBuilder().
-		WithDBPath(":memory:?cache=shared").
+		WithDBPath(tempFile.Name()).
 		WithTrackedAuthor(testAuthor.Name(), testAuthor.Emails()).
 		WithTargetRepo("repo1").
 		WithTrackedRepos([]string{
@@ -64,6 +70,7 @@ func prepareTestConfig() (*config_model.ConfigModel, func(), error) {
 		(*config_cleanup)()
 		(*repo_cleanup1)()
 		(*repo_cleanup2)()
+		os.Remove(tempFile.Name())
 	}
 
 	return cfg, cleanup, nil
