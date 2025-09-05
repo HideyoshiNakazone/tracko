@@ -9,6 +9,7 @@ import (
 	config_model "github.com/HideyoshiNakazone/tracko/lib/config/model"
 	"github.com/go-git/go-git/v6"
 	"github.com/go-git/go-git/v6/plumbing/object"
+	"github.com/go-git/go-git/v6/plumbing/storer"
 )
 
 // IsGitRepository checks if the given path is a Git repository.
@@ -80,7 +81,7 @@ func (it *commitIterator) Next() (*GitCommitMeta, error) {
 func (it *commitIterator) ForEach(fn func(*GitCommitMeta) error) error {
 	for {
 		commit, err := it.Next()
-		if err != nil {
+		if err != nil && !errors.Is(err, storer.ErrStop) {
 			return err
 		}
 		if commit == nil {

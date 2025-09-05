@@ -1,7 +1,6 @@
 package import_handler
 
 import (
-	"fmt"
 	"sync"
 
 	config_model "github.com/HideyoshiNakazone/tracko/lib/config/model"
@@ -10,12 +9,19 @@ import (
 	"github.com/HideyoshiNakazone/tracko/lib/utils"
 )
 
-func processTrackedRepos(repoPath string, state_repo *state.StateRepository, cfg *config_model.ConfigModel, ch chan *repo.GitCommitMeta, wg *sync.WaitGroup) {
+func processTrackedRepos(repoPath string, cfg *config_model.ConfigModel, ch chan *repo.GitCommitMeta, errorChannel chan error, wg *sync.WaitGroup) {
 	defer wg.Done()
+
+	state_repo, err := state.NewStateRepository(cfg.DBPath())
+	if err != nil {
+		errorChannel <- err
+		return
+	}
 
 	author := cfg.TrackedAuthor()
 	trackedRepo, err := repo.NewTrackedRepo(repoPath, &author)
 	if err != nil {
+		errorChannel <- err
 		return
 	}
 
@@ -24,12 +30,12 @@ func processTrackedRepos(repoPath string, state_repo *state.StateRepository, cfg
 	if err == nil {
 		listParams.Since = &lastCommit.CommitDate
 	} else {
-		fmt.Println("No last commit found, importing all commits")
 		err = nil
 	}
 
 	commitIter, err := trackedRepo.ListRepositoryHistory(&listParams)
 	if err != nil {
+		errorChannel <- err
 		return
 	}
 	defer commitIter.Close()
@@ -40,50 +46,53 @@ func processTrackedRepos(repoPath string, state_repo *state.StateRepository, cfg
 	})
 }
 
-func processCommits(state_repo *state.StateRepository, ch chan *repo.GitCommitMeta) {
+func processCommits(cfg *config_model.ConfigModel, ch chan *repo.GitCommitMeta, errorChannel chan error) {
 	batchSize := 1_000
+
+	state_repo, err := state.NewStateRepository(cfg.DBPath())
+	if err != nil {
+		errorChannel <- err
+		return
+	}
 
 	for batch := range utils.PartitionChannel(ch, batchSize) {
 		err := state_repo.BulkCreate(
 			utils.Map(batch, state.NewCommitStateFromMetadata),
 		)
 		if err != nil {
-			fmt.Printf("Failed to bulk create commits: %v\n", err)
+			errorChannel <- err
 			return
 		}
 	}
-
-	commitCount, err := state_repo.Count()
-	if err != nil {
-		fmt.Printf("Failed to count commits: %v\n", err)
-		return
-	}
-	fmt.Printf("Imported %d commits\n", commitCount)
 }
 
 func ImportTrackedRepos(cfg *config_model.ConfigModel) error {
 	commitChannel := make(chan *repo.GitCommitMeta)
-	state_repo, err := state.NewStateRepository(cfg.DBPath())
-	if err != nil {
-		return err
-	}
+	errorChannel := make(chan error)
 
 	var read_wg sync.WaitGroup
 	for _, repoPath := range cfg.TrackedRepos() {
 		read_wg.Add(1)
-		go processTrackedRepos(repoPath, state_repo, cfg, commitChannel, &read_wg)
+		go processTrackedRepos(repoPath, cfg, commitChannel, errorChannel, &read_wg)
 	}
 
 	// Start the writer goroutine (no WaitGroup needed)
-	done := make(chan struct{})
 	go func() {
-		processCommits(state_repo, commitChannel)
-		close(done)
+		processCommits(cfg, commitChannel, errorChannel)
+		close(errorChannel)
+	}()
+	
+	go func() {
+		read_wg.Wait()
+		close(commitChannel)
 	}()
 
-	read_wg.Wait()
-	close(commitChannel)
-	<-done // Wait for writer to finish
+	for err := range errorChannel {
+		if err != nil {
+			return err
+		}
+	}
 
-	return nil
+    return nil
+
 }
