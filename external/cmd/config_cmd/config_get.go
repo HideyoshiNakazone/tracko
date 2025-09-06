@@ -3,7 +3,7 @@ package config_cmd
 import (
 	"errors"
 
-	"github.com/HideyoshiNakazone/tracko/lib/config_handler"
+	config_handler "github.com/HideyoshiNakazone/tracko/lib/config/handler"
 	"github.com/spf13/cobra"
 )
 

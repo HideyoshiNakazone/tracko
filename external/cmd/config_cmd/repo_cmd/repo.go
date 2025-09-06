@@ -9,7 +9,6 @@ var RepoCmd = &cobra.Command{
 	Long: `Manage the tracked repositories in the configuration of the Tracko CLI.`,
 }
 
-
 func init() {
 	RepoCmd.AddCommand(RepoListCmd)
 	RepoCmd.AddCommand(RepoAddCmd)

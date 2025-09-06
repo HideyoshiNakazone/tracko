@@ -1,7 +1,7 @@
 package repo_cmd
 
 import (
-	"github.com/HideyoshiNakazone/tracko/lib/config_handler"
+	config_handler "github.com/HideyoshiNakazone/tracko/lib/config/handler"
 	"github.com/spf13/cobra"
 )
 

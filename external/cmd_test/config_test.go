@@ -5,10 +5,9 @@ import (
 	"testing"
 
 	"github.com/HideyoshiNakazone/tracko/external/cmd"
-	"github.com/HideyoshiNakazone/tracko/lib/config_handler"
-	"github.com/HideyoshiNakazone/tracko/lib/config_model"
+	config_handler "github.com/HideyoshiNakazone/tracko/lib/config/handler"
+	config_model "github.com/HideyoshiNakazone/tracko/lib/config/model"
 )
-
 
 func Test_ExecuteConfigCommand(t *testing.T) {
 	// Prepare config
@@ -30,17 +29,17 @@ func Test_ExecuteConfigCommand(t *testing.T) {
 	defer (*tempCleanup)()
 
 	tests := []struct {
-		name       string
-		args      []string
-		wantErr   bool
+		name    string
+		args    []string
+		wantErr bool
 	}{
 		{
-			name:     "Valid config get",
+			name:    "Valid config get",
 			args:    []string{"--config", tempFile.Name(), "config"},
 			wantErr: false,
 		},
 		{
-			name:     "Invalid config get",
+			name:    "Invalid config get",
 			args:    []string{"--config", "invalid.yaml", "config"},
 			wantErr: true,
 		},

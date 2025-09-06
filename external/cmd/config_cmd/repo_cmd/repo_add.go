@@ -4,7 +4,7 @@ import (
 	"errors"
 	"path/filepath"
 
-	"github.com/HideyoshiNakazone/tracko/lib/config_handler"
+	config_handler "github.com/HideyoshiNakazone/tracko/lib/config/handler"
 	"github.com/HideyoshiNakazone/tracko/lib/repo"
 	"github.com/spf13/cobra"
 )
@@ -15,7 +15,6 @@ var RepoAddCmd = &cobra.Command{
 	Args:  cobra.ExactArgs(1),
 	RunE:  runRepoAdd,
 }
-
 
 func runRepoAdd(cmd *cobra.Command, args []string) error {
 	cfg, err := config_handler.GetConfig()

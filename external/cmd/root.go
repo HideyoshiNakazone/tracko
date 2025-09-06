@@ -9,7 +9,7 @@ import (
 
 	"github.com/HideyoshiNakazone/tracko/external/cmd/config_cmd"
 	"github.com/HideyoshiNakazone/tracko/external/flags"
-	"github.com/HideyoshiNakazone/tracko/lib/config_handler"
+	config_handler "github.com/HideyoshiNakazone/tracko/lib/config/handler"
 	"github.com/HideyoshiNakazone/tracko/lib/internal_errors"
 )
 
@@ -34,10 +34,10 @@ func initConfig(cmd *cobra.Command, args []string) error {
 	}
 
 	switch {
-		case errors.Is(err, internal_errors.ErrConfigNotInitialized):
-			return fmt.Errorf("configuration is not initialized, please run 'tracko config init' to initialize")
-		default:
-			return fmt.Errorf("error initializing configuration: %w", err)
+	case errors.Is(err, internal_errors.ErrConfigNotInitialized):
+		return fmt.Errorf("configuration is not initialized, please run 'tracko config init' to initialize")
+	default:
+		return fmt.Errorf("error initializing configuration: %w", err)
 		// Handle other errors
 	}
 }

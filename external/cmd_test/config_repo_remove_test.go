@@ -5,10 +5,9 @@ import (
 	"testing"
 
 	"github.com/HideyoshiNakazone/tracko/external/cmd"
-	"github.com/HideyoshiNakazone/tracko/lib/config_handler"
-	"github.com/HideyoshiNakazone/tracko/lib/config_model"
+	config_handler "github.com/HideyoshiNakazone/tracko/lib/config/handler"
+	config_model "github.com/HideyoshiNakazone/tracko/lib/config/model"
 )
-
 
 func Test_ExecuteConfigRepoRemove(t *testing.T) {
 	// Prepare config
@@ -24,7 +23,7 @@ func Test_ExecuteConfigRepoRemove(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to build expected config: %v", err)
 	}
-	
+
 	tempFile, tempCleanup, err := config_handler.PrepareTestConfig(expectedConfig)
 
 	if err != nil {
@@ -38,7 +37,7 @@ func Test_ExecuteConfigRepoRemove(t *testing.T) {
 			"config", "repo", "remove", "/tmp/repo1",
 		},
 	)
-	
+
 	var outputBuf bytes.Buffer
 	cmd.RootCmd.SetOut(&outputBuf)
 
@@ -67,7 +66,7 @@ func Test_ExecuteConfigRepoRemove_IfNotExists(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to build expected config: %v", err)
 	}
-	
+
 	tempFile, tempCleanup, err := config_handler.PrepareTestConfig(expectedConfig)
 
 	if err != nil {
@@ -81,7 +80,7 @@ func Test_ExecuteConfigRepoRemove_IfNotExists(t *testing.T) {
 			"config", "repo", "remove", "/tmp/repo1",
 		},
 	)
-	
+
 	var outputBuf bytes.Buffer
 	cmd.RootCmd.SetOut(&outputBuf)
 
@@ -89,7 +88,6 @@ func Test_ExecuteConfigRepoRemove_IfNotExists(t *testing.T) {
 		t.Fatalf("Command execution succeeded unexpectedly")
 	}
 }
-
 
 func Test_ExecuteConfigRepoRemove_InvalidPath(t *testing.T) {
 	// Prepare config
